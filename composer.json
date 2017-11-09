@@ -1,0 +1,34 @@
+{
+  "name": "setbased/abc-web-assets-core",
+  "description": "ABC-Framework: Core Web Assets",
+  "keywords": [
+    "ABC-Framework",
+    "Web Assets",
+    "Core"
+  ],
+  "license": "MIT",
+  "require": {
+    "php": ">=7.0.0",
+    "setbased/abc-html": "^1.4.0",
+    "setbased/abc-url": "^1.1.0",
+    "setbased/abc-web-assets": "^1.0.0",
+    "setbased/exception": "^1.0.0"
+  },
+  "require-dev": {
+    "phing/phing": "^2.0.0",
+    "phpunit/phpunit": "^6.0.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "SetBased\\Abc\\WebAssets\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SetBased\\Abc\\WebAssets\\Test\\": "test/"
+    }
+  },
+  "config": {
+    "bin-dir": "bin/"
+  }
+}
