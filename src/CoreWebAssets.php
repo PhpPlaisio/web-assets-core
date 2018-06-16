@@ -1,5 +1,5 @@
 <?php
-//----------------------------------------------------------------------------------------------------------------------
+
 namespace SetBased\Abc\WebAssets;
 
 use SetBased\Abc\Helper\Html;
@@ -87,6 +87,7 @@ class CoreWebAssets implements WebAssets
   protected $pageTitle = '';
 
   //--------------------------------------------------------------------------------------------------------------------
+
   /**
    * Appends with a separator a string to the page title.
    *
@@ -99,10 +100,10 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function appendPageTitle($pageTitleAddendum)
+  public function appendPageTitle(?string $pageTitleAddendum): void
   {
     // Return immediately if the addendum is empty.
-    if ((string)$pageTitleAddendum==='') return;
+    if ((string)$pageTitleAddendum=='') return;
 
     // Append separator if the page title is not empty only.
     if ($this->pageTitle!=='') $this->pageTitle .= ' - ';
@@ -122,21 +123,21 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function cssAppendClassSpecificSource($className, $media = null)
+  public function cssAppendClassSpecificSource(string $className, ?string $media = null): void
   {
     $this->cssAppendSource($this->cssClassNameToRootRelativeUrl($className, $media), $media);
   }
 
-  //--------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
   /**
    * Adds a line with a CSS snippet to the internal CSS.
    *
-   * @param string $cssLine The line with CSS snippet.
+   * @param string|null $cssLine The line with CSS snippet.
    *
    * @api
    * @since 1.0.0
    */
-  public function cssAppendLine($cssLine)
+  public function cssAppendLine(?string $cssLine): void
   {
     $this->css[] = $cssLine;
   }
@@ -152,7 +153,7 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function cssAppendSource($url, $media = null)
+  public function cssAppendSource(string $url, ?string $media = null): void
   {
     $url = Url::combine(self::$cssRootRelativeUrl, $url);
 
@@ -179,7 +180,7 @@ class CoreWebAssets implements WebAssets
    *
    * @return string
    */
-  public function cssClassNameToRootRelativeUrl($className, $media = null)
+  public function cssClassNameToRootRelativeUrl(string $className, ?string $media = null): string
   {
     $url = self::$cssRootRelativeUrl.$this->jsClassNameToNamespace($className);
     if ($media!==null) $url .= '.'.$media;
@@ -198,7 +199,7 @@ class CoreWebAssets implements WebAssets
    * @param string|null $media The media for which the CSS source is optimized for. Note: use null for 'all'
    *                           devices; null is preferred over 'all'.
    */
-  public function cssOptimizedAppendSource($url, $media = null)
+  public function cssOptimizedAppendSource(string $url, ?string $media = null): void
   {
     $this->cssSources[] = ['href'  => $url,
                            'media' => $media,
@@ -213,7 +214,7 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function echoCascadingStyleSheets()
+  public function echoCascadingStyleSheets(): void
   {
     // Echo links to external CSS.
     foreach ($this->cssSources as $css_source)
@@ -235,7 +236,7 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function echoJavaScript()
+  public function echoJavaScript(): void
   {
     if ($this->javaScript)
     {
@@ -255,8 +256,8 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function echoMetaTags()
-  {
+  public function echoMetaTags(): void
+{
     if (!empty($this->keywords))
     {
       $this->metaAttributes[] = ['name' => 'keywords', 'content' => implode(',', $this->keywords)];
@@ -274,16 +275,16 @@ class CoreWebAssets implements WebAssets
   /**
    * Echos the HTML element for the page title.
    *
-   * @see   appendPageTitle()
-   * @see   getPageTitle()
-   * @see   setPageTitle()
+   * @see appendPageTitle()
+   * @see getPageTitle()
+   * @see setPageTitle()
    *
    * @api
    * @since 1.0.0
    */
-  public function echoPageTitle()
+  public function echoPageTitle(): void
   {
-    if ($this->pageTitle==='') return;
+    if ($this->pageTitle=='') return;
 
     echo '<title>', Html::txt2Html($this->pageTitle), '</title>';
   }
@@ -294,14 +295,14 @@ class CoreWebAssets implements WebAssets
    *
    * @return string
    *
-   * @see   appendPageTitle()
-   * @see   echoPageTitle()
-   * @see   setPageTitle()
+   * @see appendPageTitle()
+   * @see echoPageTitle()
+   * @see setPageTitle()
    *
    * @api
    * @since 1.0.0
    */
-  public function getPageTitle()
+  public function getPageTitle(): string
   {
     return $this->pageTitle;
   }
@@ -322,7 +323,7 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function jsAdmClassSpecificFunctionCall($className, $jsFunctionName, $args = [])
+  public function jsAdmClassSpecificFunctionCall(string $className, string $jsFunctionName, array $args = []): void
   {
     $this->jsAdmFunctionCall($this->jsClassNameToNamespace($className), $jsFunctionName, $args);
   }
@@ -338,7 +339,7 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function jsAdmFunctionCall($namespace, $jsFunctionName, $args = [])
+  public function jsAdmFunctionCall(string $namespace, string $jsFunctionName, array $args = []): void
   {
     // Test JS file actually exists.
     $fullPath = $this->rootRelativeUrlToFullPath($this->jsNamespaceToRootRelativeUrl($namespace));
@@ -358,7 +359,7 @@ class CoreWebAssets implements WebAssets
    * @param string $jsFunctionName The function name inside the namespace.
    * @param array  $args           The optional arguments for the function.
    */
-  public function jsAdmOptimizedFunctionCall($namespace, $jsFunctionName, $args = [])
+  public function jsAdmOptimizedFunctionCall(string $namespace, string $jsFunctionName, array $args = []): void
   {
     $this->javaScript .= 'require(["';
     $this->javaScript .= $namespace;
@@ -378,7 +379,7 @@ class CoreWebAssets implements WebAssets
    *
    * @param string $mainJsScript The main script for RequireJS.
    */
-  public function jsAdmOptimizedSetPageSpecificMain($mainJsScript)
+  public function jsAdmOptimizedSetPageSpecificMain(string $mainJsScript): void
   {
     $this->jsTrailerAttributes = ['src' => $mainJsScript];
   }
@@ -396,7 +397,7 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function jsAdmSetPageSpecificMain($className)
+  public function jsAdmSetPageSpecificMain(string $className): void
   {
     // Convert PHP class name to root relative URL.
     $url = $this->jsClassNameToMainRootRelativeUrl($className);
@@ -420,7 +421,7 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function metaAddElement($attributes)
+  public function metaAddElement(array $attributes): void
   {
     $this->metaAttributes[] = $attributes;
   }
@@ -434,7 +435,7 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function metaAddKeyword($keyword)
+  public function metaAddKeyword(string $keyword): void
   {
     $this->keywords[] = $keyword;
   }
@@ -448,7 +449,7 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function metaAddKeywords($keywords)
+  public function metaAddKeywords(array $keywords): void
   {
     $this->keywords = array_merge($this->keywords, $keywords);
   }
@@ -466,7 +467,7 @@ class CoreWebAssets implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function setPageTitle($pageTitle)
+  public function setPageTitle(?string $pageTitle): void
   {
     $this->pageTitle = (string)$pageTitle;
   }
@@ -491,7 +492,7 @@ class CoreWebAssets implements WebAssets
    *
    * @param string $className The class name.
    *
-   * @returns string
+   * @return string
    */
   protected function jsClassNameToNamespace($className)
   {
