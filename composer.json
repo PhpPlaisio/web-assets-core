@@ -1,17 +1,18 @@
 {
-  "name": "setbased/abc-web-assets-core",
-  "description": "ABC-Framework: Core Web Assets",
+  "name": "plaisio/web-assets-core",
+  "description": "PhpPlaisio: Core Web Assets",
   "keywords": [
-    "ABC-Framework",
+    "PhpPlaisio",
     "Web Assets",
     "Core"
   ],
   "license": "MIT",
   "require": {
     "php": ">=7.1.0",
-    "setbased/abc-html": "^2.0.0",
-    "setbased/abc-url": "^2.0.0",
-    "setbased/abc-web-assets": "^2.0.0",
+    "ext-json": "*",
+    "plaisio/html": "^3.0.0",
+    "plaisio/url": "^3.0.0",
+    "plaisio/web-assets": "^3.0.0",
     "setbased/exception": "^2.0.0"
   },
   "require-dev": {
@@ -20,12 +21,12 @@
   },
   "autoload": {
     "psr-4": {
-      "SetBased\\Abc\\WebAssets\\": "src/"
+      "Plaisio\\WebAssets\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "SetBased\\Abc\\WebAssets\\Test\\": "test/"
+      "Plaisio\\WebAssets\\Test\\": "test/"
     }
   },
   "config": {

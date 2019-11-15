@@ -1,9 +1,10 @@
 <?php
+declare(strict_types=1);
 
-namespace SetBased\Abc\WebAssets;
+namespace Plaisio\WebAssets;
 
-use SetBased\Abc\Helper\Html;
-use SetBased\Abc\Helper\Url;
+use Plaisio\Helper\Html;
+use Plaisio\Helper\Url;
 use SetBased\Exception\LogicException;
 
 /**
@@ -87,7 +88,6 @@ class CoreWebAssets implements WebAssets
   protected $pageTitle = '';
 
   //--------------------------------------------------------------------------------------------------------------------
-
   /**
    * Appends with a separator a string to the page title.
    *
@@ -238,10 +238,12 @@ class CoreWebAssets implements WebAssets
    */
   public function echoJavaScript(): void
   {
-    if ($this->javaScript)
+    if ($this->javaScript!==null)
     {
       $js = 'require([],function(){'.$this->javaScript.'});';
-      echo '<script type="text/javascript">/*<![CDATA[*/set_based_abc_inline_js='.json_encode($js).'/*]]>*/</script>';
+      echo '<script type="text/javascript">/*<![CDATA[*/php_plaisio_inline_js=';
+      echo json_encode($js);
+      echo '/*]]>*/</script>';
     }
     if (!empty($this->jsTrailerAttributes))
     {
