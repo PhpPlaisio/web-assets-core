@@ -241,7 +241,7 @@ class CoreWebAssets implements WebAssets
     if ($this->javaScript!==null)
     {
       $js = 'require([],function(){'.$this->javaScript.'});';
-      echo '<script type="text/javascript">/*<![CDATA[*/php_plaisio_inline_js=';
+      echo '<script>/*<![CDATA[*/php_plaisio_inline_js=';
       echo json_encode($js);
       echo '/*]]>*/</script>';
     }

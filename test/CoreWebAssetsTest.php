@@ -203,7 +203,7 @@ class CoreWebAssetsTest extends TestCase
     $assets->jsAdmClassSpecificFunctionCall('SetBased\\Foo\\Bar', 'main');
     $assets->echoJavaScript();
 
-    $this->expectOutputString('<script type="text/javascript">/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main();});});"/*]]>*/</script>');
+    $this->expectOutputString('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main();});});"/*]]>*/</script>');
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -217,7 +217,7 @@ class CoreWebAssetsTest extends TestCase
     $assets->jsAdmClassSpecificFunctionCall('SetBased\\Foo\\Bar', 'main', ['foo', 1]);
     $assets->echoJavaScript();
 
-    $this->expectOutputString('<script type="text/javascript">/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main(\\"foo\\",1);});});"/*]]>*/</script>');
+    $this->expectOutputString('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main(\\"foo\\",1);});});"/*]]>*/</script>');
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -231,7 +231,7 @@ class CoreWebAssetsTest extends TestCase
     $assets->jsAdmFunctionCall('SetBased/Foo', 'main');
     $assets->echoJavaScript();
 
-    $this->expectOutputString('<script type="text/javascript">/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\\"],function(page){\'use strict\';page.main();});});"/*]]>*/</script>');
+    $this->expectOutputString('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\\"],function(page){\'use strict\';page.main();});});"/*]]>*/</script>');
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -245,7 +245,7 @@ class CoreWebAssetsTest extends TestCase
     $assets->jsAdmFunctionCall('SetBased/Foo', 'main', ['foo', false]);
     $assets->echoJavaScript();
 
-    $this->expectOutputString('<script type="text/javascript">/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\\"],function(page){\'use strict\';page.main(\\"foo\\",false);});});"/*]]>*/</script>');
+    $this->expectOutputString('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\\"],function(page){\'use strict\';page.main(\\"foo\\",false);});});"/*]]>*/</script>');
   }
 
   //--------------------------------------------------------------------------------------------------------------------
