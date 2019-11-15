@@ -13,7 +13,7 @@ use Plaisio\WebAssets\CoreWebAssets;
 class CoreWebAssetsTest extends TestCase
 {
   //--------------------------------------------------------------------------------------------------------------------
-  public static function setUpBeforeClass()
+  public static function setUpBeforeClass(): void
   {
     CoreWebAssets::$assetDir           = __DIR__;
     CoreWebAssets::$cssRootRelativeUrl = '/css/';
@@ -24,7 +24,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method appendPageTitle with null.
    */
-  public function testAppendPageTitle01()
+  public function testAppendPageTitle01(): void
   {
     $assets = new CoreWebAssets();
 
@@ -38,7 +38,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method appendPageTitle with empty string.
    */
-  public function testAppendPageTitle02()
+  public function testAppendPageTitle02(): void
   {
     $assets = new CoreWebAssets();
 
@@ -52,7 +52,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method appendPageTitle with non empty string.
    */
-  public function testAppendPageTitle03()
+  public function testAppendPageTitle03(): void
   {
     $assets = new CoreWebAssets();
 
@@ -66,7 +66,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method cssAppendClassSpecificSource.
    */
-  public function testCssAppendClassSpecificSource1()
+  public function testCssAppendClassSpecificSource1(): void
   {
     $assets = new CoreWebAssets();
 
@@ -80,7 +80,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method cssAppendClassSpecificSource with media.
    */
-  public function testCssAppendClassSpecificSource2()
+  public function testCssAppendClassSpecificSource2(): void
   {
     $assets = new CoreWebAssets();
 
@@ -94,7 +94,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method cssAppendLine with null.
    */
-  public function testCssAppendLine()
+  public function testCssAppendLine(): void
   {
     $assets = new CoreWebAssets();
 
@@ -112,7 +112,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method cssAppendSource.
    */
-  public function testCssAppendSource1()
+  public function testCssAppendSource1(): void
   {
     $assets = new CoreWebAssets();
 
@@ -126,7 +126,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method cssAppendSource with media.
    */
-  public function testCssAppendSource2()
+  public function testCssAppendSource2(): void
   {
     $assets = new CoreWebAssets();
 
@@ -139,13 +139,12 @@ class CoreWebAssetsTest extends TestCase
   //--------------------------------------------------------------------------------------------------------------------
   /**
    * Test for method cssAppendSource with missing CSS file.
-   *
-   * @expectedException \LogicException
    */
-  public function testCssAppendSource3()
+  public function testCssAppendSource3(): void
   {
     $assets = new CoreWebAssets();
 
+    $this->expectException(\LogicException::class);
     $assets->cssAppendSource('not-found.css');
     $assets->echoCascadingStyleSheets();
   }
@@ -154,7 +153,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method echoPageTitle with null.
    */
-  public function testEchoPageTitle01()
+  public function testEchoPageTitle01(): void
   {
     $assets = new CoreWebAssets();
 
@@ -168,7 +167,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method echoPageTitle with empty string.
    */
-  public function testEchoPageTitle02()
+  public function testEchoPageTitle02(): void
   {
     $assets = new CoreWebAssets();
 
@@ -182,7 +181,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method echoPageTitle with some string.
    */
-  public function testEchoPageTitle03()
+  public function testEchoPageTitle03(): void
   {
     $assets = new CoreWebAssets();
 
@@ -196,7 +195,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method jsAdmClassSpecificFunctionCall.
    */
-  public function testJsAdmClassSpecificFunctionCall1()
+  public function testJsAdmClassSpecificFunctionCall1(): void
   {
     $assets = new CoreWebAssets();
 
@@ -210,7 +209,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method jsAdmClassSpecificFunctionCall with arguments.
    */
-  public function testJsAdmClassSpecificFunctionCall2()
+  public function testJsAdmClassSpecificFunctionCall2(): void
   {
     $assets = new CoreWebAssets();
 
@@ -224,7 +223,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method jsAdmFunctionCall.
    */
-  public function testJsAdmFunctionCall1()
+  public function testJsAdmFunctionCall1(): void
   {
     $assets = new CoreWebAssets();
 
@@ -238,7 +237,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method jsAdmFunctionCall with arguments.
    */
-  public function testJsAdmFunctionCall2()
+  public function testJsAdmFunctionCall2(): void
   {
     $assets = new CoreWebAssets();
 
@@ -251,13 +250,12 @@ class CoreWebAssetsTest extends TestCase
   //--------------------------------------------------------------------------------------------------------------------
   /**
    * Test for method jsAdmFunctionCall with missing JS file.
-   *
-   * @expectedException \LogicException
    */
-  public function testJsAdmFunctionCall3()
+  public function testJsAdmFunctionCall3(): void
   {
     $assets = new CoreWebAssets();
 
+    $this->expectException(\LogicException::class);
     $assets->jsAdmFunctionCall('SetBased/Foo/Bax', 'main', ['foo', false]);
   }
 
@@ -265,7 +263,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method jsAdmOptimizedSetPageSpecificMain.
    */
-  public function testJsAdmOptimizedSetPageSpecificMain()
+  public function testJsAdmOptimizedSetPageSpecificMain(): void
   {
     $assets = new CoreWebAssets();
 
@@ -279,7 +277,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method jsAdmSetPageSpecificMain.
    */
-  public function testJsAdmSetPageSpecificMain1()
+  public function testJsAdmSetPageSpecificMain1(): void
   {
     $assets = new CoreWebAssets();
 
@@ -292,13 +290,12 @@ class CoreWebAssetsTest extends TestCase
   //--------------------------------------------------------------------------------------------------------------------
   /**
    * Test for method jsAdmSetPageSpecificMain with missing JS file.
-   *
-   * @expectedException \LogicException
    */
-  public function testJsAdmSetPageSpecificMain2()
+  public function testJsAdmSetPageSpecificMain2(): void
   {
     $assets = new CoreWebAssets();
 
+    $this->expectException(\LogicException::class);
     $assets->jsAdmSetPageSpecificMain('SetBased\\Foo\\Bax');
   }
 
@@ -306,7 +303,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method metaAddElement.
    */
-  public function testMetaAddElement()
+  public function testMetaAddElement(): void
   {
     $assets = new CoreWebAssets();
 
@@ -322,7 +319,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method metaAddKeyword.
    */
-  public function testMetaAddKeyword()
+  public function testMetaAddKeyword(): void
   {
     $assets = new CoreWebAssets();
 
@@ -339,7 +336,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method metaAddKeywords.
    */
-  public function testMetaAddKeywords()
+  public function testMetaAddKeywords(): void
   {
     $assets = new CoreWebAssets();
 
@@ -355,7 +352,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method setPageTitle with null.
    */
-  public function testSetPageTitle01()
+  public function testSetPageTitle01(): void
   {
     $assets = new CoreWebAssets();
 
@@ -368,7 +365,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method setPageTitle with empty string.
    */
-  public function testSetPageTitle02()
+  public function testSetPageTitle02(): void
   {
     $assets = new CoreWebAssets();
 
@@ -381,7 +378,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method setPageTitle with non empty string.
    */
-  public function testSetPageTitle03()
+  public function testSetPageTitle03(): void
   {
     $assets = new CoreWebAssets();
 
@@ -394,7 +391,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method setPageTitle with non empty string overriding previous set title.
    */
-  public function testSetPageTitle04()
+  public function testSetPageTitle04(): void
   {
     $assets = new CoreWebAssets();
 
