@@ -225,7 +225,7 @@ class CoreWebAssets implements WebAssets
     // Echos internal CSS.
     if (!empty($this->css))
     {
-      echo '<style type="text/css" media="all">', implode('', $this->css), '</style>';
+      echo '<style media="all">', implode('', $this->css), '</style>';
     }
   }
 

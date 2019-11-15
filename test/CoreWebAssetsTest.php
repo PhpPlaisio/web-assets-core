@@ -105,7 +105,7 @@ class CoreWebAssetsTest extends TestCase
 
     $assets->echoCascadingStyleSheets();
 
-    $this->expectOutputString('<style type="text/css" media="all">body{color: red;}</style>');
+    $this->expectOutputString('<style media="all">body{color: red;}</style>');
   }
 
   //--------------------------------------------------------------------------------------------------------------------
