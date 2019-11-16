@@ -10,8 +10,8 @@
   "require": {
     "php": ">=7.1.0",
     "ext-json": "*",
-    "plaisio/html": "^1.0.0",
-    "plaisio/url": "^1.0.0",
+    "plaisio/helper-html": "^1.0.0",
+    "plaisio/helper-url": "^1.0.0",
     "plaisio/web-assets": "^1.0.0",
     "setbased/exception": "^2.0.0"
   },
