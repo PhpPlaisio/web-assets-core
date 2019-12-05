@@ -5,6 +5,7 @@ namespace Plaisio\WebAssets;
 
 use Plaisio\Helper\Html;
 use Plaisio\Helper\Url;
+use Plaisio\Kernel\Nub;
 use SetBased\Exception\LogicException;
 
 /**
@@ -14,13 +15,6 @@ use SetBased\Exception\LogicException;
 class CoreWebAssets implements WebAssets
 {
   //--------------------------------------------------------------------------------------------------------------------
-  /**
-   * The full path to the directory with web assets. Note: Must note have a trailing slash.
-   *
-   * @var string
-   */
-  public static $assetDir;
-
   /**
    * The root-relative URL for storing CSS files. Note: Must have a leading and a trailing slash.
    *
@@ -524,7 +518,7 @@ class CoreWebAssets implements WebAssets
    */
   protected function rootRelativeUrlToFullPath($url)
   {
-    return self::$assetDir.$url;
+    return Nub::$dirs->assetsDir().$url;
   }
 
   //--------------------------------------------------------------------------------------------------------------------

@@ -13,11 +13,20 @@ use Plaisio\WebAssets\CoreWebAssets;
 class CoreWebAssetsTest extends TestCase
 {
   //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * The kernel for testing.
+   *
+   * @var TestKernel
+   */
+  private static $kernel;
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * @inheritDoc
+   */
   public static function setUpBeforeClass(): void
   {
-    CoreWebAssets::$assetDir           = __DIR__;
-    CoreWebAssets::$cssRootRelativeUrl = '/css/';
-    CoreWebAssets::$jsRootRelativeUrl  = '/js/';
+    self::$kernel = new TestKernel();
   }
 
   //--------------------------------------------------------------------------------------------------------------------
