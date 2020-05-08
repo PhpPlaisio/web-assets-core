@@ -518,7 +518,7 @@ class CoreWebAssets implements WebAssets
    */
   protected function rootRelativeUrlToFullPath($url)
   {
-    return Nub::$dirs->assetsDir().$url;
+    return Nub::$nub->dirs->assetsDir().$url;
   }
 
   //--------------------------------------------------------------------------------------------------------------------
