@@ -5,22 +5,13 @@ namespace Plaisio\WebAssets\Test;
 
 use Plaisio\Dirs\CoreDirs;
 use Plaisio\Dirs\Dirs;
-use Plaisio\Kernel\Nub;
+use Plaisio\PlaisioKernel;
 
 /**
  * Kernel for test purposes.
  */
-class TestKernel extends Nub
+class TestKernel extends PlaisioKernel
 {
-  //--------------------------------------------------------------------------------------------------------------------
-  /**
-   * Object constructor.
-   */
-  public function __construct()
-  {
-    parent::__construct();
-  }
-
   //--------------------------------------------------------------------------------------------------------------------
   /**
    * Returns the object for getting directory names.

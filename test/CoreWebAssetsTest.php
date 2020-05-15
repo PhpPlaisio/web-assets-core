@@ -35,7 +35,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testAppendPageTitle01(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->setPageTitle('Hello');
     $assets->appendPageTitle(null);
@@ -49,7 +49,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testAppendPageTitle02(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->setPageTitle('Hello');
     $assets->appendPageTitle('');
@@ -63,7 +63,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testAppendPageTitle03(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->setPageTitle('Hello');
     $assets->appendPageTitle('World');
@@ -77,7 +77,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssAppendClassSpecificSource1(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->cssAppendClassSpecificSource('SetBased\\Foo\\Bar');
     $assets->echoCascadingStyleSheets();
@@ -91,7 +91,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssAppendClassSpecificSource2(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->cssAppendClassSpecificSource('SetBased\\Foo\\Bar', 'printer');
     $assets->echoCascadingStyleSheets();
@@ -105,7 +105,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssAppendLine(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->cssAppendLine('body');
     $assets->cssAppendLine('{');
@@ -123,7 +123,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssAppendSource1(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->cssAppendSource('foo.css');
     $assets->echoCascadingStyleSheets();
@@ -137,7 +137,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssAppendSource2(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->cssAppendSource('foo.css', 'printer');
     $assets->echoCascadingStyleSheets();
@@ -151,7 +151,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssAppendSource3(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $this->expectException(\LogicException::class);
     $assets->cssAppendSource('not-found.css');
@@ -164,7 +164,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testEchoPageTitle01(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->setPageTitle(null);
     $assets->echoPageTitle();
@@ -178,7 +178,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testEchoPageTitle02(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->setPageTitle('');
     $assets->echoPageTitle();
@@ -192,7 +192,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testEchoPageTitle03(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->setPageTitle('Hello World');
     $assets->echoPageTitle();
@@ -206,7 +206,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testJsAdmClassSpecificFunctionCall1(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->jsAdmClassSpecificFunctionCall('SetBased\\Foo\\Bar', 'main');
     $assets->echoJavaScript();
@@ -220,7 +220,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testJsAdmClassSpecificFunctionCall2(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->jsAdmClassSpecificFunctionCall('SetBased\\Foo\\Bar', 'main', ['foo', 1]);
     $assets->echoJavaScript();
@@ -234,7 +234,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testJsAdmFunctionCall1(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->jsAdmFunctionCall('SetBased/Foo', 'main');
     $assets->echoJavaScript();
@@ -248,7 +248,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testJsAdmFunctionCall2(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->jsAdmFunctionCall('SetBased/Foo', 'main', ['foo', false]);
     $assets->echoJavaScript();
@@ -262,7 +262,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testJsAdmFunctionCall3(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $this->expectException(\LogicException::class);
     $assets->jsAdmFunctionCall('SetBased/Foo/Bax', 'main', ['foo', false]);
@@ -274,7 +274,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testJsAdmOptimizedSetPageSpecificMain(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->jsAdmOptimizedSetPageSpecificMain("/js/SetBased/Foo/Bar.main.js");
     $assets->echoJavaScript();
@@ -288,7 +288,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testJsAdmSetPageSpecificMain1(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->jsAdmSetPageSpecificMain('SetBased\\Foo\\Bar');
     $assets->echoJavaScript();
@@ -302,7 +302,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testJsAdmSetPageSpecificMain2(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $this->expectException(\LogicException::class);
     $assets->jsAdmSetPageSpecificMain('SetBased\\Foo\\Bax');
@@ -314,7 +314,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testMetaAddElement(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->metaAddElement(['foo' => 'bar']);
     Html::$encoding = null;
@@ -330,7 +330,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testMetaAddKeyword(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->metaAddKeyword('foo');
     $assets->metaAddKeyword('bar');
@@ -347,7 +347,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testMetaAddKeywords(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->metaAddKeywords(['foo', 'bar']);
     Html::$encoding = null;
@@ -363,7 +363,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testSetPageTitle01(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->setPageTitle(null);
 
@@ -376,7 +376,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testSetPageTitle02(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->setPageTitle('');
 
@@ -389,7 +389,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testSetPageTitle03(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->setPageTitle('Hello World');
 
@@ -402,7 +402,7 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testSetPageTitle04(): void
   {
-    $assets = new CoreWebAssets();
+    $assets = new CoreWebAssets(self::$kernel);
 
     $assets->setPageTitle('Hello World');
     $assets->setPageTitle('Bye Bye');

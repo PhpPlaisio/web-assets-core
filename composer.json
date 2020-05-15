@@ -10,15 +10,16 @@
   "require": {
     "php": ">=7.3",
     "ext-json": "*",
-    "plaisio/kernel": "^2.0",
+    "plaisio/kernel": "^3.0",
     "plaisio/helper-html": "^1.1",
     "plaisio/helper-url": "^1.1",
-    "plaisio/web-assets": "^1.1",
+    "plaisio/web-assets": "^1.2",
     "setbased/exception": "^2.0"
   },
   "require-dev": {
     "phing/phing": "^2.0",
     "phpunit/phpunit": "^9.0",
+    "plaisio/console": "^2.0",
     "plaisio/dirs-core": "^1.0"
   },
   "autoload": {

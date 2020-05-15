@@ -5,14 +5,14 @@ namespace Plaisio\WebAssets;
 
 use Plaisio\Helper\Html;
 use Plaisio\Helper\Url;
-use Plaisio\Kernel\Nub;
+use Plaisio\PlaisioObject;
 use SetBased\Exception\LogicException;
 
 /**
  * Helper class for setting web assets (things like CSS, JavaScript and image files) and generating HTML code for
  * including web assets.
  */
-class CoreWebAssets implements WebAssets
+class CoreWebAssets extends PlaisioObject implements WebAssets
 {
   //--------------------------------------------------------------------------------------------------------------------
   /**
@@ -518,7 +518,7 @@ class CoreWebAssets implements WebAssets
    */
   protected function rootRelativeUrlToFullPath($url)
   {
-    return Nub::$nub->dirs->assetsDir().$url;
+    return $this->nub->dirs->assetsDir().$url;
   }
 
   //--------------------------------------------------------------------------------------------------------------------
