@@ -13,7 +13,7 @@
     "plaisio/kernel": "^3.0",
     "plaisio/helper-html": "^1.1",
     "plaisio/helper-url": "^1.1",
-    "plaisio/web-assets": "^1.2",
+    "plaisio/web-assets": "^2.0",
     "setbased/exception": "^2.0"
   },
   "require-dev": {

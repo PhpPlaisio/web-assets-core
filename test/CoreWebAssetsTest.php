@@ -73,34 +73,6 @@ class CoreWebAssetsTest extends TestCase
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method cssAppendClassSpecificSource.
-   */
-  public function testCssAppendClassSpecificSource1(): void
-  {
-    $assets = new CoreWebAssets(self::$kernel);
-
-    $assets->cssAppendClassSpecificSource('SetBased\\Foo\\Bar');
-    $assets->echoCascadingStyleSheets();
-
-    $this->expectOutputString('<link href="/css/SetBased/Foo/Bar.css" rel="stylesheet" type="text/css"/>');
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------
-  /**
-   * Test for method cssAppendClassSpecificSource with media.
-   */
-  public function testCssAppendClassSpecificSource2(): void
-  {
-    $assets = new CoreWebAssets(self::$kernel);
-
-    $assets->cssAppendClassSpecificSource('SetBased\\Foo\\Bar', 'printer');
-    $assets->echoCascadingStyleSheets();
-
-    $this->expectOutputString('<link href="/css/SetBased/Foo/Bar.printer.css" media="printer" rel="stylesheet" type="text/css"/>');
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------
-  /**
    * Test for method cssAppendLine with null.
    */
   public function testCssAppendLine(): void
@@ -125,6 +97,34 @@ class CoreWebAssetsTest extends TestCase
   {
     $assets = new CoreWebAssets(self::$kernel);
 
+    $assets->cssAppendSource('SetBased\\Foo\\Bar');
+    $assets->echoCascadingStyleSheets();
+
+    $this->expectOutputString('<link href="/css/SetBased/Foo/Bar.css" rel="stylesheet" type="text/css"/>');
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssAppendSource with media.
+   */
+  public function testCssAppendSource2(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->cssAppendSource('SetBased\\Foo\\Bar', 'printer');
+    $assets->echoCascadingStyleSheets();
+
+    $this->expectOutputString('<link href="/css/SetBased/Foo/Bar.printer.css" media="printer" rel="stylesheet" type="text/css"/>');
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssAppendSource.
+   */
+  public function testCssAppendSource3(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
     $assets->cssAppendSource('foo.css');
     $assets->echoCascadingStyleSheets();
 
@@ -135,7 +135,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method cssAppendSource with media.
    */
-  public function testCssAppendSource2(): void
+  public function testCssAppendSource4(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
 
@@ -149,7 +149,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method cssAppendSource with missing CSS file.
    */
-  public function testCssAppendSource3(): void
+  public function testCssAppendSource5(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
 
@@ -202,13 +202,13 @@ class CoreWebAssetsTest extends TestCase
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method jsAdmClassSpecificFunctionCall.
+   * Test for method jsAdmFunctionCall.
    */
-  public function testJsAdmClassSpecificFunctionCall1(): void
+  public function testJsAdmFunctionCall1(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
 
-    $assets->jsAdmClassSpecificFunctionCall('SetBased\\Foo\\Bar', 'main');
+    $assets->jsAdmFunctionCall('SetBased\\Foo\\Bar', 'main');
     $assets->echoJavaScript();
 
     $this->expectOutputString('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main();});});"/*]]>*/</script>');
@@ -216,13 +216,13 @@ class CoreWebAssetsTest extends TestCase
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method jsAdmClassSpecificFunctionCall with arguments.
+   * Test for method jsAdmFunctionCall with arguments.
    */
-  public function testJsAdmClassSpecificFunctionCall2(): void
+  public function testJsAdmFunctionCall2(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
 
-    $assets->jsAdmClassSpecificFunctionCall('SetBased\\Foo\\Bar', 'main', ['foo', 1]);
+    $assets->jsAdmFunctionCall('SetBased\\Foo\\Bar', 'main', ['foo', 1]);
     $assets->echoJavaScript();
 
     $this->expectOutputString('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main(\\"foo\\",1);});});"/*]]>*/</script>');
@@ -232,7 +232,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method jsAdmFunctionCall.
    */
-  public function testJsAdmFunctionCall1(): void
+  public function testJsAdmFunctionCall3(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
 
@@ -246,7 +246,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method jsAdmFunctionCall with arguments.
    */
-  public function testJsAdmFunctionCall2(): void
+  public function testJsAdmFunctionCall4(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
 
@@ -260,7 +260,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method jsAdmFunctionCall with missing JS file.
    */
-  public function testJsAdmFunctionCall3(): void
+  public function testJsAdmFunctionCall5(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
 
