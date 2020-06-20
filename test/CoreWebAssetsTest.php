@@ -21,6 +21,7 @@ class CoreWebAssetsTest extends TestCase
   private static $kernel;
 
   //--------------------------------------------------------------------------------------------------------------------
+
   /**
    * @inheritDoc
    */
@@ -73,7 +74,7 @@ class CoreWebAssetsTest extends TestCase
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method cssAppendLine with null.
+   * Test for method cssAppendLine.
    */
   public function testCssAppendLine(): void
   {
@@ -156,6 +157,218 @@ class CoreWebAssetsTest extends TestCase
     $this->expectException(\LogicException::class);
     $assets->cssAppendSource('not-found.css');
     $assets->echoCascadingStyleSheets();
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssAppendSourcesList.
+   */
+  public function testCssAppendSourcesList1(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->cssAppendSource('foo.css', 'printer');
+    $assets->cssAppendSourcesList('SetBased\\Foo\\Bar');
+    $assets->echoCascadingStyleSheets();
+
+    $this->expectOutputString(implode('', ['<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/SetBased/Foo/bar1.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/SetBased/Foo/bar2.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/SetBased/Foo/bar3.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/foo1.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/foo2.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>']));
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssAppendSourcesList with non-exiting list file.
+   */
+  public function testCssAppendSourcesList2(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $this->expectException(\LogicException::class);
+    $assets->cssAppendSourcesList(self::class);
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssAppendSourcesList with non-exiting CSS file.
+   */
+  public function testCssAppendSourcesList3(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $this->expectException(\LogicException::class);
+    $this->expectExceptionMessageMatches('/incorrect-list.txt:5/');
+    $assets->cssAppendSourcesList('/css/SetBased/Foo/incorrect-list.txt');
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for combinations of methods cssAppendLine cssPushLine.
+   */
+  public function testCssPushAndAppendLine(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->cssAppendLine('div.two{}');
+    $assets->cssPushLine('div.one{}');
+    $assets->cssAppendLine('div.three{}');
+
+    $assets->echoCascadingStyleSheets();
+
+    $this->expectOutputString('<style media="all">div.one{}div.two{}div.three{}</style>');
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for combinations of methods cssPushSource and cssAppendSource.
+   */
+  public function testCssPushAndAppendSource(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->cssPushSource('foo2.css');
+    $assets->cssAppendSource('foo3.css');
+    $assets->cssPushSource('foo1.css');
+
+    $assets->echoCascadingStyleSheets();
+
+    $this->expectOutputString(implode('', ['<link href="/css/foo1.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/foo2.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>']));
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssPushLine.
+   */
+  public function testCssPushLine(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->cssPushLine('body{color: blue;}');
+
+    $assets->echoCascadingStyleSheets();
+
+    $this->expectOutputString('<style media="all">body{color: blue;}</style>');
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssPushSource.
+   */
+  public function testCssPushSource1(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->cssPushSource('SetBased\\Foo\\Bar');
+    $assets->echoCascadingStyleSheets();
+
+    $this->expectOutputString('<link href="/css/SetBased/Foo/Bar.css" rel="stylesheet" type="text/css"/>');
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssPushSource with media.
+   */
+  public function testCssPushSource2(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->cssPushSource('SetBased\\Foo\\Bar', 'printer');
+    $assets->echoCascadingStyleSheets();
+
+    $this->expectOutputString('<link href="/css/SetBased/Foo/Bar.printer.css" media="printer" rel="stylesheet" type="text/css"/>');
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssPushSource.
+   */
+  public function testCssPushSource3(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->cssPushSource('foo.css');
+    $assets->echoCascadingStyleSheets();
+
+    $this->expectOutputString('<link href="/css/foo.css" rel="stylesheet" type="text/css"/>');
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssPushSource with media.
+   */
+  public function testCssPushSource4(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->cssPushSource('foo.css', 'printer');
+    $assets->echoCascadingStyleSheets();
+
+    $this->expectOutputString('<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>');
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssPushSource with missing CSS file.
+   */
+  public function testCssPushSource5(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $this->expectException(\LogicException::class);
+    $assets->cssPushSource('not-found.css');
+    $assets->echoCascadingStyleSheets();
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssAppendSourcesList.
+   */
+  public function testCssPushSourcesList1(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->cssAppendSource('foo.css', 'printer');
+    $assets->cssPushSourcesList('SetBased\\Foo\\Bar');
+    $assets->echoCascadingStyleSheets();
+
+    $this->expectOutputString(implode('', ['<link href="/css/SetBased/Foo/bar1.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/SetBased/Foo/bar2.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/SetBased/Foo/bar3.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/foo1.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/foo2.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>']));
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssPushSourcesList with non-exiting list file.
+   */
+  public function testCssPushSourcesList2(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $this->expectException(\LogicException::class);
+    $assets->cssPushSourcesList(self::class);
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssPushSourcesList with non-exiting CSS file.
+   */
+  public function testCssPushSourcesList3(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $this->expectException(\LogicException::class);
+    $this->expectExceptionMessageMatches('/incorrect-list.txt:11/');
+    $assets->cssPushSourcesList('/css/SetBased/Foo/incorrect-list.txt');
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -270,13 +483,13 @@ class CoreWebAssetsTest extends TestCase
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method jsAdmOptimizedSetPageSpecificMain.
+   * Test for method jsAdmOptimizedSetMain.
    */
-  public function testJsAdmOptimizedSetPageSpecificMain(): void
+  public function testJsAdmOptimizedSetMain(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
 
-    $assets->jsAdmOptimizedSetPageSpecificMain("/js/SetBased/Foo/Bar.main.js");
+    $assets->jsAdmOptimizedSetMain("/js/SetBased/Foo/Bar.main.js");
     $assets->echoJavaScript();
 
     $this->expectOutputString('<script src="/js/SetBased/Foo/Bar.main.js"></script>');
@@ -359,6 +572,61 @@ class CoreWebAssetsTest extends TestCase
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
+   * Test for method pushPageTitle with null.
+   */
+  public function testPushPageTitle01(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->setPageTitle('Hello');
+    $assets->pushPageTitle(null);
+
+    self::assertSame('Hello', $assets->getPageTitle());
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method pushPageTitle with empty string.
+   */
+  public function testPushPageTitle02(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->setPageTitle('Hello');
+    $assets->pushPageTitle('');
+
+    self::assertSame('Hello', $assets->getPageTitle());
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method pushPageTitle with non empty string.
+   */
+  public function testPushPageTitle03(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->pushPageTitle('Hello');
+
+    self::assertSame('Hello', $assets->getPageTitle());
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method pushPageTitle with non empty string.
+   */
+  public function testPushPageTitle04(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->setPageTitle('World');
+    $assets->pushPageTitle('Hello');
+
+    self::assertSame('Hello - World', $assets->getPageTitle());
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
    * Test for method setPageTitle with null.
    */
   public function testSetPageTitle01(): void
@@ -404,7 +672,7 @@ class CoreWebAssetsTest extends TestCase
   {
     $assets = new CoreWebAssets(self::$kernel);
 
-    $assets->setPageTitle('Hello World');
+    $assets->setPageTitle('Hello, world');
     $assets->setPageTitle('Bye Bye');
 
     self::assertSame('Bye Bye', $assets->getPageTitle());

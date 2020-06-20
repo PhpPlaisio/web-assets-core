@@ -7,6 +7,7 @@ use Plaisio\Helper\Html;
 use Plaisio\Helper\Url;
 use Plaisio\PlaisioObject;
 use SetBased\Exception\LogicException;
+use Webmozart\PathUtil\Path;
 
 /**
  * Helper class for setting web assets (things like CSS, JavaScript and image files) and generating HTML code for
@@ -28,6 +29,13 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    * @var string
    */
   public static $jsRootRelativeUrl = '/js/';
+
+  /**
+   * The separator between parts of the page title.
+   *
+   * @var string
+   */
+  public static $separator = ' - ';
 
   /**
    * CSS code to be included on the page.
@@ -79,30 +87,32 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @var string
    */
-  protected $pageTitle = '';
+  protected $title = '';
 
   //--------------------------------------------------------------------------------------------------------------------
+
   /**
    * Appends with a separator a string to the page title.
    *
-   * @param string|null $pageTitleAddendum The string to eb append to the page title.
+   * @param string|null $postfix The string to eb append to the page title.
    *
    * @see   echoPageTitle()
    * @see   getPageTitle()
+   * @see   titlePush()
    * @see   setPageTitle()
    *
    * @api
    * @since 1.0.0
    */
-  public function appendPageTitle(?string $pageTitleAddendum): void
+  public function appendPageTitle(?string $postfix): void
   {
-    // Return immediately if the addendum is empty.
-    if ((string)$pageTitleAddendum=='') return;
+    // Return immediately if the postfix is empty.
+    if ((string)$postfix==='') return;
 
     // Append separator if the page title is not empty only.
-    if ($this->pageTitle!=='') $this->pageTitle .= ' - ';
+    if ($this->title!=='') $this->title .= self::$separator;
 
-    $this->pageTitle .= $pageTitleAddendum;
+    $this->title .= $postfix;
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -129,9 +139,11 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *                              <li> The __CLASS__ or __TRAIT__ magical constant.
    *                              <li> Name of a class with specified by the ::class resolution operator.
    *                              </ul>
-   *                              When a class name is given, backslashes will be translated to forward slashes to
-   *                              construct the filename relative to the resource root of the CSS source.
-   * @param string|null $media    The media for which the CSS source is optimized for. Note: use null for 'all' devices;
+   *                              When a class name is given, backslashes will be translated to forward slashes and
+   *                              extension .css will be added to construct the filename relative to the resource root
+   *                              of the CSS source.
+   * @param string|null $media    The media for which the CSS source is optimized for. Note: use null for 'all'
+   *                              devices;
    *                              null is preferred over 'all'.
    *
    * @api
@@ -139,27 +151,41 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    */
   public function cssAppendSource(string $location, ?string $media = null): void
   {
-    if (strpos($location, '\\')!==false)
-    {
-      $url = $this->cssClassNameToRootRelativeUrl($location, $media);
-    }
-    else
-    {
-      $url = $location;
-    }
+    $uri = $this->cssResolveLocation($location, $media, '.css');
+    $this->assertUriExists($uri);
+    $this->cssOptimizedAppendSource($uri, $media);
+  }
 
-    $url = Url::combine(self::$cssRootRelativeUrl, $url);
-
-    if (Url::isRelative($url))
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Appends a list of CCS files at the end of the list of CSS files in the header of the page.
+   *
+   * @param string      $location The location to the CSS source. One of:
+   *                              <ul>
+   *                              <li> A relative URL.
+   *                              <li> The __CLASS__ or __TRAIT__ magical constant.
+   *                              <li> Name of a class specified by the ::class resolution operator.
+   *                              </ul>
+   *                              When a class name is given, backslashes will be translated to forward slashes and
+   *                              extension .txt will be added to construct the filename relative to the resource root.
+   * @param string|null $media    The media for which the CSS source is optimized for. Note: use null for 'all'
+   *                              devices; null is preferred over 'all'.
+   *
+   * @api
+   * @since 1.0.0
+   */
+  public function cssAppendSourcesList(string $location, ?string $media = null): void
+  {
+    [$path, $lines] = $this->cssReadListLocation($location, $media);
+    foreach ($lines as $i => $line)
     {
-      $fullPath = $this->rootRelativeUrlToFullPath($url);
-      if (!file_exists($fullPath))
+      $line = trim($line);
+      if ($line!=='' && $line[0]!=='#')
       {
-        throw new LogicException("CSS file '%s' does not exists", $fullPath);
+        $uri = $this->cssResolveListItem($line, $path, $i + 1);
+        $this->cssOptimizedAppendSource($uri, $media);
       }
     }
-
-    $this->cssOptimizedAppendSource($url, $media);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -178,6 +204,98 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
                            'media' => $media,
                            'rel'   => 'stylesheet',
                            'type'  => 'text/css'];
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Pushes an optimized CCS file at the beginning of the list of CSS files in the header of the page.
+   *
+   * Do not use this method directly. Use {@link cssPushSource} instead.
+   *
+   * @param string      $url   The URL to the CSS source.
+   * @param string|null $media The media for which the CSS source is optimized for. Note: use null for 'all'
+   *                           devices; null is preferred over 'all'.
+   */
+  public function cssOptimizedPushSource(string $url, ?string $media = null): void
+  {
+    array_unshift($this->cssSources, ['href'  => $url,
+                                      'media' => $media,
+                                      'rel'   => 'stylesheet',
+                                      'type'  => 'text/css']);
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Pushes a line with a CSS snippet at the beginning of the internal CSS.
+   *
+   * @param string|null $cssLine The line with CSS snippet.
+   *
+   * @api
+   * @since 2.0.0
+   */
+  public function cssPushLine(?string $cssLine): void
+  {
+    array_unshift($this->css, $cssLine);
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Pushes a CCS file at the beginning of the list of CSS files in the header of the page.
+   *
+   * @param string      $location The location to the CSS source. One of:
+   *                              <ul>
+   *                              <li> A relative of absolute URL.
+   *                              <li> The __CLASS__ or __TRAIT__ magical constant.
+   *                              <li> Name of a class with specified by the ::class resolution operator.
+   *                              </ul>
+   *                              When a class name is given, backslashes will be translated to forward slashes and
+   *                              extension .css will be added to construct the filename relative to the resource
+   *                              root.
+   * @param string|null $media    The media for which the CSS source is optimized for. Note: use null for 'all'
+   *                              devices;
+   *                              null is preferred over 'all'.
+   *
+   * @api
+   * @since 2.0.0
+   */
+  public function cssPushSource(string $location, ?string $media = null): void
+  {
+    $uri = $this->cssResolveLocation($location, $media, '.css');
+    $this->assertUriExists($uri);
+    $this->cssOptimizedPushSource($uri, $media);
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Pushes a CCS list of files at the beginning of the list of CSS files in the header of the page.
+   *
+   * @param string      $location The location to the CSS source. One of:
+   *                              <ul>
+   *                              <li> A filename relative to the resource root with extension .txt.
+   *                              <li> The __CLASS__ or __TRAIT__ magical constant.
+   *                              <li> Name of a class with specified by the ::class resolution operator.
+   *                              </ul>
+   *                              When a class name is given, backslashes will be translated to forward slashes and
+   *                              extension .txt will be added to construct the filename relative to the resource root.
+   * @param string|null $media    The media for which the CSS sources are optimized for. Note: use null for 'all'
+   *                              devices; null is preferred over 'all'.
+   *
+   * @api
+   * @since 2.0.0
+   */
+  public function cssPushSourcesList(string $location, ?string $media = null): void
+  {
+    [$path, $lines] = $this->cssReadListLocation($location, $media);
+    $lines = array_reverse($lines, true);
+    foreach ($lines as $i => $line)
+    {
+      $line = trim($line);
+      if ($line!=='' && $line[0]!=='#')
+      {
+        $uri = $this->cssResolveListItem($line, $path, $i + 1);
+        $this->cssOptimizedPushSource($uri, $media);
+      }
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -259,9 +377,9 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    */
   public function echoPageTitle(): void
   {
-    if ($this->pageTitle=='') return;
+    if ($this->title==='') return;
 
-    echo '<title>', Html::txt2Html($this->pageTitle), '</title>';
+    echo '<title>', Html::txt2Html($this->title), '</title>';
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -275,11 +393,11 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    * @see   setPageTitle()
    *
    * @api
-   * @since 1.0.0
+   * @since 2.0.0
    */
   public function getPageTitle(): string
   {
-    return $this->pageTitle;
+    return $this->title;
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -311,7 +429,6 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
       $namespace = $name;
     }
 
-    // Test JS file actually exists.
     $fullPath = $this->rootRelativeUrlToFullPath($this->jsNamespaceToRootRelativeUrl($namespace));
     if (!file_exists($fullPath))
     {
@@ -349,7 +466,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @param string $mainJsScript The main script for RequireJS.
    */
-  public function jsAdmOptimizedSetPageSpecificMain(string $mainJsScript): void
+  public function jsAdmOptimizedSetMain(string $mainJsScript): void
   {
     $this->jsTrailerAttributes = ['src' => $mainJsScript];
   }
@@ -367,7 +484,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    * @api
    * @since 1.0.0
    */
-  public function jsAdmSetPageSpecificMain(string $className): void
+  public function jsAdmSetMain(string $className): void
   {
     // Convert PHP class name to root relative URL.
     $url = $this->jsClassNameToMainRootRelativeUrl($className);
@@ -380,6 +497,15 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
     }
 
     $this->jsTrailerAttributes = ['src' => $this->jsNamespaceToRootRelativeUrl('require'), 'data-main' => $url];
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * @param string $name
+   */
+  public function jsAdmSetPageSpecificMain(string $name): void
+  {
+    $this->jsAdmSetMain($name);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -426,20 +552,68 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Sets title of the page.
+   * Pushes with a separator a string to the page title.
    *
-   * @param string|null $pageTitle The new title of the page.
+   * @param string|null $prefix The string to be prepended to the page title.
    *
-   * @see   appendPageTitle()
    * @see   echoPageTitle()
+   * @see   appendPageTitle()
    * @see   getPageTitle()
+   * @see   setPageTitle()
    *
    * @api
-   * @since 1.0.0
+   * @since 2.0.0
    */
-  public function setPageTitle(?string $pageTitle): void
+  public function pushPageTitle(?string $prefix): void
   {
-    $this->pageTitle = (string)$pageTitle;
+    // Return immediately if the $prefix is empty.
+    if ((string)$prefix==='') return;
+
+    if ($this->title!=='')
+    {
+      $this->title = $prefix.self::$separator.$this->title;
+    }
+    else
+    {
+      $this->title = $prefix;
+    }
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Sets the title of the page.
+   *
+   * @param string|null $title The new title of the page.
+   *
+   * @see   echoPageTitle()
+   * @see   appendPageTitle()
+   * @see   getPageTitle()
+   * @see   titlePush()
+   *
+   * @api
+   * @since 2.0.0
+   */
+  public function setPageTitle(?string $title): void
+  {
+    $this->title = (string)$title;
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * If a URI is a relative tests the file exists.
+   *
+   * @param string $uri The URI.
+   */
+  private function assertUriExists(string $uri): void
+  {
+    if (Url::isRelative($uri))
+    {
+      $fullPath = $this->rootRelativeUrlToFullPath($uri);
+      if (!file_exists($fullPath))
+      {
+        throw new LogicException("CSS file '%s' does not exists", $fullPath);
+      }
+    }
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -450,16 +624,123 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *                               slashes to construct the filename relative to the resource root of the CSS source.
    * @param string|null $media     The media for which the CSS source is optimized for. Note: use null for 'all'
    *                               devices; null is preferred over 'all'.
+   * @param string      $extension The extension of the filename. Either .css or .txt.
    *
    * @return string
    */
-  private function cssClassNameToRootRelativeUrl(string $className, ?string $media = null): string
+  private function cssClassNameToRootRelativeUrl(string $className, ?string $media, string $extension): string
   {
     $url = self::$cssRootRelativeUrl.$this->jsClassNameToNamespace($className);
     if ($media!==null) $url .= '.'.$media;
-    $url .= '.css';
+    $url .= $extension;
 
     return $url;
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Reads the CSS list file and an array with the full path the the list file and the content of the list file as an
+   * array of lines.
+   *
+   * @param string      $location  The location to the CSS source. One of:
+   *                               <ul>
+   *                               <li> A relative of absolute URL.
+   *                               <li> The __CLASS__ or __TRAIT__ magical constant.
+   *                               <li> Name of a class with specified by the ::class resolution operator.
+   *                               </ul>
+   *                               When a class name is given, backslashes will be translated to forward slashes and
+   *                               the extension will be added to construct the filename relative to the resource
+   *                               root.
+   * @param string|null $media     The media for which the CSS source is optimized for. Note: use null for 'all'
+   *                               devices;
+   *                               null is preferred over 'all'.
+   *
+   * @return array
+   */
+  private function cssReadListLocation(string $location, ?string $media): array
+  {
+    $uri = $this->cssResolveLocation($location, $media, '.txt');
+
+    $path = Path::join([$this->nub->dirs->assetsDir(), $uri]);
+    if (!file_exists($path))
+    {
+      throw new LogicException("CSS list file '%s' does not exists", $path);
+    }
+
+    $content = file_get_contents($path);
+    $lines   = explode(PHP_EOL, $content);
+
+    return [$path, $lines];
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Returns the path relative to resources root of an item in a CSS list file.
+   *
+   * @param string $cssPath  The item found in the list file, the path of a CSS file.
+   * @param string $listPath The full path to the list file.
+   * @param int    $lineno   The line number in $listPath.
+   *
+   * @return string
+   */
+  private function cssResolveListItem(string $cssPath, string $listPath, int $lineno): string
+  {
+    if ($cssPath[0]=='/')
+    {
+      $fullPathCssFile = Path::join([$this->nub->dirs->assetsDir(), self::$cssRootRelativeUrl, $cssPath]);
+    }
+    else
+    {
+      $baseDir         = Path::getDirectory($listPath);
+      $fullPathCssFile = Path::makeAbsolute($cssPath, $baseDir);
+    }
+
+    if (!file_exists($fullPathCssFile))
+    {
+      throw new LogicException("CSS file '%s' specified at %s:%d does not exists",
+                               $fullPathCssFile,
+                               $listPath,
+                               $lineno);
+    }
+
+    $uri = Path::makeRelative($fullPathCssFile, $this->nub->dirs->assetsDir());
+    $uri = '/'.$uri;
+
+    return $uri;
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Resolves a location to an URI.
+   *
+   * @param string      $location  The location to the CSS source. One of:
+   *                               <ul>
+   *                               <li> A relative of absolute URL.
+   *                               <li> The __CLASS__ or __TRAIT__ magical constant.
+   *                               <li> Name of a class with specified by the ::class resolution operator.
+   *                               </ul>
+   *                               When a class name is given, backslashes will be translated to forward slashes and
+   *                               the extension will be added to construct the filename relative to the resource
+   *                               root.
+   * @param string|null $media     The media for which the CSS source is optimized for. Note: use null for 'all'
+   *                               devices;
+   *                               null is preferred over 'all'.
+   * @param string      $extension The extension of the filename. Either .css or .txt.
+   *
+   * @return string
+   */
+  private function cssResolveLocation(string $location, ?string $media, string $extension): string
+  {
+    if (strpos($location, '\\')!==false)
+    {
+      $uri = $this->cssClassNameToRootRelativeUrl($location, $media, $extension);
+    }
+    else
+    {
+      $uri = $location;
+    }
+
+    return Url::combine(self::$cssRootRelativeUrl, $uri);
   }
 
   //--------------------------------------------------------------------------------------------------------------------

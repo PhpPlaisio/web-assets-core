@@ -10,11 +10,12 @@
   "require": {
     "php": ">=7.3",
     "ext-json": "*",
-    "plaisio/kernel": "^3.0",
     "plaisio/helper-html": "^1.1",
     "plaisio/helper-url": "^1.1",
+    "plaisio/kernel": "^3.0",
     "plaisio/web-assets": "^2.0",
-    "setbased/exception": "^2.0"
+    "setbased/exception": "^2.0",
+    "webmozart/path-util": "^2.3"
   },
   "require-dev": {
     "phing/phing": "^2.0",

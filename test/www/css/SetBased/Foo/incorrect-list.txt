@@ -1,0 +1,11 @@
+# The paths below are relative to this file.
+bar1.css
+bar2.css
+bar3.css
+bar4.css
+
+# The paths below are relative to the CSS resource root.
+/foo1.css
+/foo2.css
+/foo3.css
+/foo4.css
