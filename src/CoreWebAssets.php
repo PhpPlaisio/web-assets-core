@@ -685,9 +685,9 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    */
   private function cssResolveListItem(string $cssPath, string $listPath, int $lineno): string
   {
-    if ($cssPath[0]=='/')
+    if ($cssPath[0]==='/')
     {
-      $fullPathCssFile = Path::join([$this->nub->dirs->assetsDir(), self::$cssRootRelativeUrl, $cssPath]);
+      $fullPathCssFile = Path::join([$this->nub->dirs->assetsDir(), $cssPath]);
     }
     else
     {
