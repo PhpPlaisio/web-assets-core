@@ -4,6 +4,7 @@ bar2.css
 bar3.css
 
 # The paths below are relative to the CSS resource root.
-/foo1.css
-/foo2.css
-/foo3.css
+/css/foo1.css
+/css/foo2.css
+/css/foo3.css
+/foo4.css

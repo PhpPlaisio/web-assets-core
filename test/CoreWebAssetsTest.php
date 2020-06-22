@@ -177,7 +177,8 @@ class CoreWebAssetsTest extends TestCase
                                            '<link href="/css/SetBased/Foo/bar3.css" rel="stylesheet" type="text/css"/>',
                                            '<link href="/css/foo1.css" rel="stylesheet" type="text/css"/>',
                                            '<link href="/css/foo2.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>']));
+                                           '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/foo4.css" rel="stylesheet" type="text/css"/>']));
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -343,6 +344,7 @@ class CoreWebAssetsTest extends TestCase
                                            '<link href="/css/foo1.css" rel="stylesheet" type="text/css"/>',
                                            '<link href="/css/foo2.css" rel="stylesheet" type="text/css"/>',
                                            '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>',
+                                           '<link href="/foo4.css" rel="stylesheet" type="text/css"/>',
                                            '<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>']));
   }
 
