@@ -670,6 +670,11 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
     $content = file_get_contents($path);
     $lines   = explode(PHP_EOL, $content);
 
+    if (!isset($lines[0]) || !preg_match('/^#.* plaisio-css-list/', $lines[0]))
+    {
+      throw new LogicException("CSS list file '%s' doesn't start with '# plaisio-css-list'", $path);
+    }
+
     return [$path, $lines];
   }
 

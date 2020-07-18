@@ -202,8 +202,22 @@ class CoreWebAssetsTest extends TestCase
     $assets = new CoreWebAssets(self::$kernel);
 
     $this->expectException(\LogicException::class);
-    $this->expectExceptionMessageMatches('/incorrect-list.txt:5/');
+    $this->expectExceptionMessageMatches('/incorrect-list.txt:7/');
     $assets->cssAppendSourcesList('/css/SetBased/Foo/incorrect-list.txt');
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssAppendSourcesList with a missing header.
+   */
+  public function testCssAppenddSourcesList4(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $this->expectException(\LogicException::class);
+    $this->expectExceptionMessageMatches('/css/SetBased/Foo/missing-header.txt/');
+    $this->expectExceptionMessageMatches('/# plaisio-css-list/');
+    $assets->cssAppendSourcesList('/css/SetBased/Foo/missing-header.txt');
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -369,8 +383,22 @@ class CoreWebAssetsTest extends TestCase
     $assets = new CoreWebAssets(self::$kernel);
 
     $this->expectException(\LogicException::class);
-    $this->expectExceptionMessageMatches('/incorrect-list.txt:11/');
+    $this->expectExceptionMessageMatches('/incorrect-list.txt:13/');
     $assets->cssPushSourcesList('/css/SetBased/Foo/incorrect-list.txt');
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method cssPushSourcesList with a missing header.
+   */
+  public function testCssPushSourcesList4(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $this->expectException(\LogicException::class);
+    $this->expectExceptionMessageMatches('/css/SetBased/Foo/missing-header.txt/');
+    $this->expectExceptionMessageMatches('/# plaisio-css-list/');
+    $assets->cssPushSourcesList('/css/SetBased/Foo/missing-header.txt');
   }
 
   //--------------------------------------------------------------------------------------------------------------------
