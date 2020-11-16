@@ -21,7 +21,6 @@ class CoreWebAssetsTest extends TestCase
   private static $kernel;
 
   //--------------------------------------------------------------------------------------------------------------------
-
   /**
    * @inheritDoc
    */
@@ -70,6 +69,20 @@ class CoreWebAssetsTest extends TestCase
     $assets->appendPageTitle('World');
 
     self::assertSame('Hello - World', $assets->getPageTitle());
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method appendPageTitle with dash.
+   */
+  public function testAppendPageTitle04(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->setPageTitle('Hello, World!');
+    $assets->appendPageTitle('-');
+
+    self::assertSame('Hello, World!', $assets->getPageTitle());
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -653,6 +666,20 @@ class CoreWebAssetsTest extends TestCase
     $assets->pushPageTitle('Hello');
 
     self::assertSame('Hello - World', $assets->getPageTitle());
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Test for method pushPageTitle with dash.
+   */
+  public function testPushPageTitle05(): void
+  {
+    $assets = new CoreWebAssets(self::$kernel);
+
+    $assets->setPageTitle('Hello, World!');
+    $assets->pushPageTitle('-');
+
+    self::assertSame('Hello, World!', $assets->getPageTitle());
   }
 
   //--------------------------------------------------------------------------------------------------------------------

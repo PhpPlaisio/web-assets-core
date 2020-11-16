@@ -96,21 +96,22 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @param string|null $postfix The string to eb append to the page title.
    *
-   * @see   echoPageTitle()
-   * @see   getPageTitle()
-   * @see   titlePush()
-   * @see   setPageTitle()
+   * @see echoPageTitle()
+   * @see pushPageTitle()
+   * @see setPageTitle()
+   * @see setPageTitle()
    *
    * @api
    * @since 1.0.0
    */
   public function appendPageTitle(?string $postfix): void
   {
-    // Return immediately if the postfix is empty.
-    if ((string)$postfix==='') return;
+    if ($postfix===null || $postfix==='' || $postfix==='-') return;
 
-    // Append separator if the page title is not empty only.
-    if ($this->title!=='') $this->title .= self::$separator;
+    if ($this->title!=='')
+    {
+      $this->title .= self::$separator;
+    }
 
     $this->title .= $postfix;
   }
@@ -368,9 +369,10 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
   /**
    * Echos the HTML element for the page title.
    *
-   * @see   appendPageTitle()
-   * @see   getPageTitle()
-   * @see   setPageTitle()
+   * @see appendPageTitle()
+   * @see getPageTitle()
+   * @see pushPageTitle()
+   * @see setPageTitle()
    *
    * @api
    * @since 1.0.0
@@ -388,9 +390,10 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @return string
    *
-   * @see   appendPageTitle()
-   * @see   echoPageTitle()
-   * @see   setPageTitle()
+   * @see appendPageTitle()
+   * @see echoPageTitle()
+   * @see pushPageTitle()
+   * @see setPageTitle()
    *
    * @api
    * @since 2.0.0
@@ -556,18 +559,17 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @param string|null $prefix The string to be prepended to the page title.
    *
-   * @see   echoPageTitle()
-   * @see   appendPageTitle()
-   * @see   getPageTitle()
-   * @see   setPageTitle()
+   * @see appendPageTitle()
+   * @see echoPageTitle()
+   * @see getPageTitle()
+   * @see setPageTitle()
    *
    * @api
    * @since 2.0.0
    */
   public function pushPageTitle(?string $prefix): void
   {
-    // Return immediately if the $prefix is empty.
-    if ((string)$prefix==='') return;
+    if ($prefix===null || $prefix==='' || $prefix==='-') return;
 
     if ($this->title!=='')
     {
@@ -585,17 +587,17 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @param string|null $title The new title of the page.
    *
-   * @see   echoPageTitle()
-   * @see   appendPageTitle()
-   * @see   getPageTitle()
-   * @see   titlePush()
+   * @see appendPageTitle()
+   * @see echoPageTitle()
+   * @see getPageTitle()
+   * @see pushPageTitle()
    *
    * @api
    * @since 2.0.0
    */
   public function setPageTitle(?string $title): void
   {
-    $this->title = (string)$title;
+    $this->title = ($title!==null) ? $title : '';
   }
 
   //--------------------------------------------------------------------------------------------------------------------
