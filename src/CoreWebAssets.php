@@ -90,7 +90,6 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
   protected $title = '';
 
   //--------------------------------------------------------------------------------------------------------------------
-
   /**
    * Appends with a separator a string to the page title.
    *
@@ -759,7 +758,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @return string
    */
-  private function jsClassNameToMainRootRelativeUrl($className)
+  private function jsClassNameToMainRootRelativeUrl(string $className): string
   {
     return self::$jsRootRelativeUrl.$this->jsClassNameToNamespace($className).'.main.js';
   }
@@ -772,7 +771,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @return string
    */
-  private function jsClassNameToNamespace($className)
+  private function jsClassNameToNamespace(string $className): string
   {
     return str_replace('\\', '/', $className);
   }
@@ -785,7 +784,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @return string
    */
-  private function jsNamespaceToRootRelativeUrl($namespace)
+  private function jsNamespaceToRootRelativeUrl(string $namespace): string
   {
     return self::$jsRootRelativeUrl.$namespace.'.js';
   }
@@ -798,7 +797,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @return string
    */
-  private function rootRelativeUrlToFullPath($url)
+  private function rootRelativeUrlToFullPath(string $url): string
   {
     return $this->nub->dirs->assetsDir().$url;
   }
