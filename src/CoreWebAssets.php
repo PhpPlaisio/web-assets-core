@@ -21,42 +21,42 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @var string
    */
-  public static $cssRootRelativeUrl = '/css/';
+  public static string $cssRootRelativeUrl = '/css/';
 
   /**
    * The root-relative URL for storing JavaScript files. Note: Must have a leading and a trailing slash.
    *
    * @var string
    */
-  public static $jsRootRelativeUrl = '/js/';
+  public static string $jsRootRelativeUrl = '/js/';
 
   /**
    * The separator between parts of the page title.
    *
    * @var string
    */
-  public static $separator = ' - ';
+  public static string $separator = ' - ';
 
   /**
    * CSS code to be included on the page.
    *
    * @var string[]
    */
-  protected $css = [];
+  protected array $css = [];
 
   /**
    * List with CSS sources to be included on the page.
    *
    * @var array[]
    */
-  protected $cssSources = [];
+  protected array $cssSources = [];
 
   /**
    * JavaScript code to be included on the page.
    *
-   * @var string
+   * @var string|null
    */
-  protected $javaScript;
+  protected ?string $javaScript = null;
 
   /**
    * The attributes of the script element in the page trailer (i.e. near the end html tag). Example:
@@ -66,28 +66,28 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @var array
    */
-  protected $jsTrailerAttributes;
+  protected array $jsTrailerAttributes;
 
   /**
    * The keywords to be included in a meta tag for this page.
    *
    * var string[]
    */
-  protected $keywords = [];
+  protected array $keywords = [];
 
   /**
    * The attributes of the meta elements of the page.
    *
    * @var array[]
    */
-  protected $metaAttributes = [];
+  protected array $metaAttributes = [];
 
   /**
    * The title of the page.
    *
    * @var string
    */
-  protected $title = '';
+  protected string $title = '';
 
   //--------------------------------------------------------------------------------------------------------------------
   /**

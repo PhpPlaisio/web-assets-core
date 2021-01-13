@@ -573,7 +573,7 @@ class CoreWebAssetsTest extends TestCase
     $assets = new CoreWebAssets(self::$kernel);
 
     $assets->metaAddElement(['foo' => 'bar']);
-    Html::$encoding = null;
+    Html::$encoding = '';
     $assets->echoMetaTags();
     Html::$encoding = 'UTF-8';
 
@@ -590,7 +590,7 @@ class CoreWebAssetsTest extends TestCase
 
     $assets->metaAddKeyword('foo');
     $assets->metaAddKeyword('bar');
-    Html::$encoding = null;
+    Html::$encoding = '';
     $assets->echoMetaTags();
     Html::$encoding = 'UTF-8';
 
@@ -606,7 +606,7 @@ class CoreWebAssetsTest extends TestCase
     $assets = new CoreWebAssets(self::$kernel);
 
     $assets->metaAddKeywords(['foo', 'bar']);
-    Html::$encoding = null;
+    Html::$encoding = '';
     $assets->echoMetaTags();
     Html::$encoding = 'UTF-8';
 
