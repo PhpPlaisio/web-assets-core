@@ -3,6 +3,13 @@
     <target name="update">
         <exec command="composer update" checkreturn="true" passthru="true"/>
         <phing phingfile="build.xml" target="kernel" haltonfailure="true"/>
+
+        <!-- Show outdated packages -->
+        <exec executable="composer" checkreturn="true" passthru="true">
+            <arg value="--ansi"/>
+            <arg value="outdated"/>
+            <arg value="--direct"/>
+        </exec>
     </target>
 
     <target name="kernel">
