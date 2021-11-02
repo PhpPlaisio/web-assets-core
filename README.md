@@ -21,7 +21,7 @@
 <td>
 <a href="https://packagist.org/packages/plaisio/web-assets-core"><img src="https://poser.pugx.org/plaisio/web-assets-core/v/stable" alt="Latest Stable Version"/></a>
 </td>
-<td><a href="https://travis-ci.org/PhpPlaisio/web-assets-core"><img src="https://travis-ci.org/PhpPlaisio/web-assets-core.svg?branch=master" alt="Build Status"/></a><br/>
+<td><a href="https://travis-ci.com/PhpPlaisio/web-assets-core"><img src="https://travis-ci.com/PhpPlaisio/web-assets-core.svg?branch=master" alt="Build Status"/></a><br/>
 <a href="https://scrutinizer-ci.com/g/PhpPlaisio/web-assets-core/?branch=master"><img src="https://scrutinizer-ci.com/g/PhpPlaisio/web-assets-core/badges/coverage.png?b=master" alt="Code Coverage"/></a><br/>
 </td>
 <td>
