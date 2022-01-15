@@ -95,10 +95,10 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @param string|null $postfix The string to eb append to the page title.
    *
-   * @see echoPageTitle()
-   * @see pushPageTitle()
-   * @see setPageTitle()
-   * @see setPageTitle()
+   * @see   echoPageTitle()
+   * @see   pushPageTitle()
+   * @see   setPageTitle()
+   * @see   setPageTitle()
    *
    * @api
    * @since 1.0.0
@@ -308,15 +308,18 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
   public function echoCascadingStyleSheets(): void
   {
     // Echo links to external CSS.
-    foreach ($this->cssSources as $css_source)
+    foreach ($this->cssSources as $cssSource)
     {
-      echo Html::generateVoidElement('link', $css_source);
+      echo Html::htmlNested(['tag'  => 'link',
+                             'attr' => $cssSource]);
     }
 
     // Echos internal CSS.
     if (!empty($this->css))
     {
-      echo '<style media="all">', implode('', $this->css), '</style>';
+      echo Html::htmlNested(['tag'  => 'style',
+                             'attr' => ['media' => 'all'],
+                             'html' => implode('', $this->css)]);
     }
   }
 
@@ -338,7 +341,9 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
     }
     if (!empty($this->jsTrailerAttributes))
     {
-      echo Html::generateElement('script', $this->jsTrailerAttributes);
+      echo Html::htmlNested(['tag'  => 'script',
+                             'attr' => $this->jsTrailerAttributes,
+                             'html' => null]);
     }
   }
 
@@ -360,7 +365,8 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
 
     foreach ($this->metaAttributes as $metaAttribute)
     {
-      echo Html::generateVoidElement('meta', $metaAttribute);
+      echo Html::htmlNested(['tag'  => 'meta',
+                             'attr' => $metaAttribute]);
     }
   }
 
@@ -368,10 +374,10 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
   /**
    * Echos the HTML element for the page title.
    *
-   * @see appendPageTitle()
-   * @see getPageTitle()
-   * @see pushPageTitle()
-   * @see setPageTitle()
+   * @see   appendPageTitle()
+   * @see   getPageTitle()
+   * @see   pushPageTitle()
+   * @see   setPageTitle()
    *
    * @api
    * @since 1.0.0
@@ -380,7 +386,8 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
   {
     if ($this->title==='') return;
 
-    echo '<title>', Html::txt2Html($this->title), '</title>';
+    echo Html::htmlNested(['tag'  => 'title',
+                           'text' => $this->title]);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -389,10 +396,10 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @return string
    *
-   * @see appendPageTitle()
-   * @see echoPageTitle()
-   * @see pushPageTitle()
-   * @see setPageTitle()
+   * @see   appendPageTitle()
+   * @see   echoPageTitle()
+   * @see   pushPageTitle()
+   * @see   setPageTitle()
    *
    * @api
    * @since 2.0.0
@@ -558,10 +565,10 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @param string|null $prefix The string to be prepended to the page title.
    *
-   * @see appendPageTitle()
-   * @see echoPageTitle()
-   * @see getPageTitle()
-   * @see setPageTitle()
+   * @see   appendPageTitle()
+   * @see   echoPageTitle()
+   * @see   getPageTitle()
+   * @see   setPageTitle()
    *
    * @api
    * @since 2.0.0
@@ -586,10 +593,10 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @param string|null $title The new title of the page.
    *
-   * @see appendPageTitle()
-   * @see echoPageTitle()
-   * @see getPageTitle()
-   * @see pushPageTitle()
+   * @see   appendPageTitle()
+   * @see   echoPageTitle()
+   * @see   getPageTitle()
+   * @see   pushPageTitle()
    *
    * @api
    * @since 2.0.0
@@ -710,9 +717,8 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
     }
 
     $uri = Path::makeRelative($fullPathCssFile, $this->nub->dirs->assetsDir());
-    $uri = '/'.$uri;
 
-    return $uri;
+    return '/'.$uri;
   }
 
   //--------------------------------------------------------------------------------------------------------------------

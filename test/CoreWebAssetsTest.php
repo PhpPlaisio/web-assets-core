@@ -18,7 +18,7 @@ class CoreWebAssetsTest extends TestCase
    *
    * @var TestKernel
    */
-  private static $kernel;
+  private static TestKernel $kernel;
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
@@ -223,7 +223,7 @@ class CoreWebAssetsTest extends TestCase
   /**
    * Test for method cssAppendSourcesList with a missing header.
    */
-  public function testCssAppenddSourcesList4(): void
+  public function testCssAppendSourcesList4(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
 
@@ -643,7 +643,7 @@ class CoreWebAssetsTest extends TestCase
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method pushPageTitle with non empty string.
+   * Test for method pushPageTitle with non-empty string.
    */
   public function testPushPageTitle03(): void
   {
@@ -656,7 +656,7 @@ class CoreWebAssetsTest extends TestCase
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method pushPageTitle with non empty string.
+   * Test for method pushPageTitle with non-empty string.
    */
   public function testPushPageTitle04(): void
   {
@@ -710,7 +710,7 @@ class CoreWebAssetsTest extends TestCase
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method setPageTitle with non empty string.
+   * Test for method setPageTitle with non-empty string.
    */
   public function testSetPageTitle03(): void
   {
@@ -723,7 +723,7 @@ class CoreWebAssetsTest extends TestCase
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method setPageTitle with non empty string overriding previous set title.
+   * Test for method setPageTitle with non-empty string overriding previous set title.
    */
   public function testSetPageTitle04(): void
   {
