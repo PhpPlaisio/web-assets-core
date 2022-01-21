@@ -38,7 +38,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
   public static string $separator = ' - ';
 
   /**
-   * CSS code to be included on the page.
+   * The CSS code to be included on the page.
    *
    * @var string[]
    */
@@ -300,98 +300,6 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Echos the links to external and internal CSS.
-   *
-   * @api
-   * @since 1.0.0
-   */
-  public function echoCascadingStyleSheets(): void
-  {
-    // Echo links to external CSS.
-    foreach ($this->cssSources as $cssSource)
-    {
-      echo Html::htmlNested(['tag'  => 'link',
-                             'attr' => $cssSource]);
-    }
-
-    // Echos internal CSS.
-    if (!empty($this->css))
-    {
-      echo Html::htmlNested(['tag'  => 'style',
-                             'attr' => ['media' => 'all'],
-                             'html' => implode('', $this->css)]);
-    }
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------
-  /**
-   * Echos JavaScript code that will be executed using RequireJS.
-   *
-   * @api
-   * @since 1.0.0
-   */
-  public function echoJavaScript(): void
-  {
-    if ($this->javaScript!==null)
-    {
-      $js = 'require([],function(){'.$this->javaScript.'});';
-      echo '<script>/*<![CDATA[*/php_plaisio_inline_js=';
-      echo json_encode($js);
-      echo '/*]]>*/</script>';
-    }
-    if (!empty($this->jsTrailerAttributes))
-    {
-      echo Html::htmlNested(['tag'  => 'script',
-                             'attr' => $this->jsTrailerAttributes,
-                             'html' => null]);
-    }
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------
-  /**
-   * Echos the meta tags within the HTML document.
-   *
-   * @api
-   * @since 1.0.0
-   */
-  public function echoMetaTags(): void
-  {
-    if (!empty($this->keywords))
-    {
-      $this->metaAttributes[] = ['name' => 'keywords', 'content' => implode(',', $this->keywords)];
-    }
-
-    $this->metaAttributes[] = ['charset' => Html::$encoding];
-
-    foreach ($this->metaAttributes as $metaAttribute)
-    {
-      echo Html::htmlNested(['tag'  => 'meta',
-                             'attr' => $metaAttribute]);
-    }
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------
-  /**
-   * Echos the HTML element for the page title.
-   *
-   * @see   appendPageTitle()
-   * @see   getPageTitle()
-   * @see   pushPageTitle()
-   * @see   setPageTitle()
-   *
-   * @api
-   * @since 1.0.0
-   */
-  public function echoPageTitle(): void
-  {
-    if ($this->title==='') return;
-
-    echo Html::htmlNested(['tag'  => 'title',
-                           'text' => $this->title]);
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------
-  /**
    * Returns the page title.
    *
    * @return string
@@ -415,7 +323,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    *
    * @param string $name           One of:
    *                               <ul>
-   *                               <li> The namespace as in RequireJS as a single or double quoted string literal.
+   *                               <li> The namespace as in RequireJS as a single or double-quoted string literal.
    *                               <li> The __CLASS__ or __TRAIT__ magical constant.
    *                               <li> Name of a class specified by the ::class resolution operator.
    *                               </ul>
@@ -482,21 +390,27 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Sets a page specific main for RequireJS. Example:
+   * Sets a main for RequireJS. Example:
    * ```
-   * $this->jsAdmSetPageSpecificMain(__CLASS__);
+   * $this->jsAdmSetMain(__CLASS__);
    * ```
    *
-   * @param string $className The PHP cass name, i.e. __CLASS__. Backslashes will be translated to forward slashes to
-   *                          construct the namespace.
+   * @param string $name      One of:
+   *                          <ul>
+   *                          <li> The namespace as in RequireJS as a single or double-quoted string literal.
+   *                          <li> The __CLASS__ or __TRAIT__ magical constant.
+   *                          <li> Name of a class specified by the ::class resolution operator.
+   *                          </ul>
+   *                          When a class name is given, backslashes will be translated to forward slashes to
+   *                          construct the namespace as in RequireJS.
    *
    * @api
-   * @since 1.0.0
+   * @since 2.0.0
    */
-  public function jsAdmSetMain(string $className): void
+  public function jsAdmSetMain(string $name): void
   {
     // Convert PHP class name to root relative URL.
-    $url = $this->jsClassNameToMainRootRelativeUrl($className);
+    $url = $this->jsClassNameToMainRootRelativeUrl($name);
 
     // Test JS file actually exists.
     $fullPath = $this->rootRelativeUrlToFullPath($url);
@@ -506,15 +420,6 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
     }
 
     $this->jsTrailerAttributes = ['src' => $this->jsNamespaceToRootRelativeUrl('require'), 'data-main' => $url];
-  }
-
-  //--------------------------------------------------------------------------------------------------------------------
-  /**
-   * @param string $name
-   */
-  public function jsAdmSetPageSpecificMain(string $name): void
-  {
-    $this->jsAdmSetMain($name);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -608,6 +513,113 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
+   * Echos the links to external and internal CSS.
+   *
+   * @api
+   * @since 3.0.0
+   */
+  public function structCascadingStyleSheets(): ?array
+  {
+    $struct = [];
+
+    foreach ($this->cssSources as $cssSource)
+    {
+      $struct[] = ['tag'  => 'link',
+                   'attr' => $cssSource];
+    }
+
+    if (!empty($this->css))
+    {
+      $struct[] = ['tag'  => 'style',
+                   'attr' => ['media' => 'all'],
+                   'html' => implode('', $this->css)];
+    }
+
+    return $struct;
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Echos JavaScript code that will be executed using RequireJS.
+   *
+   * @api
+   * @since 3.0.0
+   */
+  public function structJavaScript(): ?array
+  {
+    $struct = [];
+
+    if ($this->javaScript!==null)
+    {
+      $js       = 'require([],function(){'.$this->javaScript.'});';
+      $struct[] = ['tag'  => 'script',
+                   'html' => '/*<![CDATA[*/php_plaisio_inline_js='.json_encode($js).'/*]]>*/'];
+    }
+
+    if (!empty($this->jsTrailerAttributes))
+    {
+      $struct[] = ['tag'  => 'script',
+                   'attr' => $this->jsTrailerAttributes,
+                   'html' => null];
+    }
+
+    return $struct;
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Echos the meta tags within the HTML document.
+   *
+   * @api
+   * @since 3.0.0
+   */
+  public function structMetaTags(): ?array
+  {
+    if (!empty($this->keywords))
+    {
+      $this->metaAttributes[] = ['name' => 'keywords', 'content' => implode(',', $this->keywords)];
+    }
+    $this->metaAttributes[] = ['charset' => Html::$encoding];
+
+    $struct = [];
+    foreach ($this->metaAttributes as $metaAttribute)
+    {
+      $struct[] = ['tag'  => 'meta',
+                   'attr' => $metaAttribute];
+    }
+
+    return $struct;
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
+   * Echos the HTML element for the page title.
+   *
+   * @see   appendPageTitle()
+   * @see   getPageTitle()
+   * @see   pushPageTitle()
+   * @see   setPageTitle()
+   *
+   * @api
+   * @since 3.0.0
+   */
+  public function structPageTitle(): ?array
+  {
+    if ($this->title==='')
+    {
+      $struct = null;
+    }
+    else
+    {
+      $struct = ['tag'  => 'title',
+                 'text' => $this->title];
+    }
+
+    return $struct;
+  }
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
    * If a URI is a relative tests the file exists.
    *
    * @param string $uri The URI.
@@ -647,7 +659,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Reads the CSS list file and an array with the full path the the list file and the content of the list file as an
+   * Reads the CSS list file and an array with the full path the list file and the content of the list file as an
    * array of lines.
    *
    * @param string      $location  The location to the CSS source. One of:
@@ -723,7 +735,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Resolves a location to an URI.
+   * Resolves a location to a URI.
    *
    * @param string      $location  The location to the CSS source. One of:
    *                               <ul>

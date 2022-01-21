@@ -36,7 +36,6 @@ class CoreWebAssetsTest extends TestCase
   public function testAppendPageTitle01(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('Hello');
     $assets->appendPageTitle(null);
 
@@ -50,7 +49,6 @@ class CoreWebAssetsTest extends TestCase
   public function testAppendPageTitle02(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('Hello');
     $assets->appendPageTitle('');
 
@@ -64,7 +62,6 @@ class CoreWebAssetsTest extends TestCase
   public function testAppendPageTitle03(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('Hello');
     $assets->appendPageTitle('World');
 
@@ -78,7 +75,6 @@ class CoreWebAssetsTest extends TestCase
   public function testAppendPageTitle04(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('Hello, World!');
     $assets->appendPageTitle('-');
 
@@ -92,15 +88,13 @@ class CoreWebAssetsTest extends TestCase
   public function testCssAppendLine(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssAppendLine('body');
     $assets->cssAppendLine('{');
     $assets->cssAppendLine('color: red;');
     $assets->cssAppendLine('}');
 
-    $assets->echoCascadingStyleSheets();
-
-    $this->expectOutputString('<style media="all">body{color: red;}</style>');
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
+    self::assertSame('<style media="all">body{color: red;}</style>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -110,11 +104,10 @@ class CoreWebAssetsTest extends TestCase
   public function testCssAppendSource1(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssAppendSource('SetBased\\Foo\\Bar');
-    $assets->echoCascadingStyleSheets();
 
-    $this->expectOutputString('<link href="/css/SetBased/Foo/Bar.css" rel="stylesheet" type="text/css"/>');
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
+    self::assertSame('<link href="/css/SetBased/Foo/Bar.css" rel="stylesheet" type="text/css"/>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -124,11 +117,11 @@ class CoreWebAssetsTest extends TestCase
   public function testCssAppendSource2(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssAppendSource('SetBased\\Foo\\Bar', 'printer');
-    $assets->echoCascadingStyleSheets();
 
-    $this->expectOutputString('<link href="/css/SetBased/Foo/Bar.printer.css" media="printer" rel="stylesheet" type="text/css"/>');
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
+    self::assertSame('<link href="/css/SetBased/Foo/Bar.printer.css" media="printer" rel="stylesheet" type="text/css"/>',
+                     $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -138,11 +131,10 @@ class CoreWebAssetsTest extends TestCase
   public function testCssAppendSource3(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssAppendSource('foo.css');
-    $assets->echoCascadingStyleSheets();
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
 
-    $this->expectOutputString('<link href="/css/foo.css" rel="stylesheet" type="text/css"/>');
+    self::assertSame('<link href="/css/foo.css" rel="stylesheet" type="text/css"/>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -152,11 +144,10 @@ class CoreWebAssetsTest extends TestCase
   public function testCssAppendSource4(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssAppendSource('foo.css', 'printer');
-    $assets->echoCascadingStyleSheets();
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
 
-    $this->expectOutputString('<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>');
+    self::assertSame('<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -165,11 +156,11 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssAppendSource5(): void
   {
-    $assets = new CoreWebAssets(self::$kernel);
-
     $this->expectException(\LogicException::class);
+
+    $assets = new CoreWebAssets(self::$kernel);
     $assets->cssAppendSource('not-found.css');
-    $assets->echoCascadingStyleSheets();
+    $assets->structCascadingStyleSheets();
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -179,19 +170,19 @@ class CoreWebAssetsTest extends TestCase
   public function testCssAppendSourcesList1(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssAppendSource('foo.css', 'printer');
     $assets->cssAppendSourcesList('SetBased\\Foo\\Bar');
-    $assets->echoCascadingStyleSheets();
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
 
-    $this->expectOutputString(implode('', ['<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/SetBased/Foo/bar1.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/SetBased/Foo/bar2.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/SetBased/Foo/bar3.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/foo1.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/foo2.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/foo4.css" rel="stylesheet" type="text/css"/>']));
+    self::assertSame(implode('', ['<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/SetBased/Foo/bar1.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/SetBased/Foo/bar2.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/SetBased/Foo/bar3.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/foo1.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/foo2.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/foo4.css" rel="stylesheet" type="text/css"/>']),
+                     $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -200,9 +191,9 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssAppendSourcesList2(): void
   {
-    $assets = new CoreWebAssets(self::$kernel);
-
     $this->expectException(\LogicException::class);
+
+    $assets = new CoreWebAssets(self::$kernel);
     $assets->cssAppendSourcesList(self::class);
   }
 
@@ -212,10 +203,10 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssAppendSourcesList3(): void
   {
-    $assets = new CoreWebAssets(self::$kernel);
-
     $this->expectException(\LogicException::class);
     $this->expectExceptionMessageMatches('/incorrect-list.txt:7/');
+
+    $assets = new CoreWebAssets(self::$kernel);
     $assets->cssAppendSourcesList('/css/SetBased/Foo/incorrect-list.txt');
   }
 
@@ -225,11 +216,11 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssAppendSourcesList4(): void
   {
-    $assets = new CoreWebAssets(self::$kernel);
-
     $this->expectException(\LogicException::class);
     $this->expectExceptionMessageMatches('/css/SetBased/Foo/missing-header.txt/');
     $this->expectExceptionMessageMatches('/# plaisio-css-list/');
+
+    $assets = new CoreWebAssets(self::$kernel);
     $assets->cssAppendSourcesList('/css/SetBased/Foo/missing-header.txt');
   }
 
@@ -245,9 +236,8 @@ class CoreWebAssetsTest extends TestCase
     $assets->cssPushLine('div.one{}');
     $assets->cssAppendLine('div.three{}');
 
-    $assets->echoCascadingStyleSheets();
-
-    $this->expectOutputString('<style media="all">div.one{}div.two{}div.three{}</style>');
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
+    self::assertSame('<style media="all">div.one{}div.two{}div.three{}</style>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -257,16 +247,15 @@ class CoreWebAssetsTest extends TestCase
   public function testCssPushAndAppendSource(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssPushSource('foo2.css');
     $assets->cssAppendSource('foo3.css');
     $assets->cssPushSource('foo1.css');
 
-    $assets->echoCascadingStyleSheets();
-
-    $this->expectOutputString(implode('', ['<link href="/css/foo1.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/foo2.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>']));
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
+    self::assertSame(implode('', ['<link href="/css/foo1.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/foo2.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>']),
+                     $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -276,12 +265,10 @@ class CoreWebAssetsTest extends TestCase
   public function testCssPushLine(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssPushLine('body{color: blue;}');
 
-    $assets->echoCascadingStyleSheets();
-
-    $this->expectOutputString('<style media="all">body{color: blue;}</style>');
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
+    self::assertSame('<style media="all">body{color: blue;}</style>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -291,11 +278,10 @@ class CoreWebAssetsTest extends TestCase
   public function testCssPushSource1(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssPushSource('SetBased\\Foo\\Bar');
-    $assets->echoCascadingStyleSheets();
 
-    $this->expectOutputString('<link href="/css/SetBased/Foo/Bar.css" rel="stylesheet" type="text/css"/>');
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
+    self::assertSame('<link href="/css/SetBased/Foo/Bar.css" rel="stylesheet" type="text/css"/>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -305,11 +291,11 @@ class CoreWebAssetsTest extends TestCase
   public function testCssPushSource2(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssPushSource('SetBased\\Foo\\Bar', 'printer');
-    $assets->echoCascadingStyleSheets();
 
-    $this->expectOutputString('<link href="/css/SetBased/Foo/Bar.printer.css" media="printer" rel="stylesheet" type="text/css"/>');
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
+    self::assertSame('<link href="/css/SetBased/Foo/Bar.printer.css" media="printer" rel="stylesheet" type="text/css"/>',
+                     $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -319,11 +305,10 @@ class CoreWebAssetsTest extends TestCase
   public function testCssPushSource3(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssPushSource('foo.css');
-    $assets->echoCascadingStyleSheets();
 
-    $this->expectOutputString('<link href="/css/foo.css" rel="stylesheet" type="text/css"/>');
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
+    self::assertSame('<link href="/css/foo.css" rel="stylesheet" type="text/css"/>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -333,11 +318,10 @@ class CoreWebAssetsTest extends TestCase
   public function testCssPushSource4(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssPushSource('foo.css', 'printer');
-    $assets->echoCascadingStyleSheets();
 
-    $this->expectOutputString('<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>');
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
+    self::assertSame('<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -346,11 +330,11 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssPushSource5(): void
   {
-    $assets = new CoreWebAssets(self::$kernel);
-
     $this->expectException(\LogicException::class);
+
+    $assets = new CoreWebAssets(self::$kernel);
     $assets->cssPushSource('not-found.css');
-    $assets->echoCascadingStyleSheets();
+    $assets->structCascadingStyleSheets();
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -360,19 +344,19 @@ class CoreWebAssetsTest extends TestCase
   public function testCssPushSourcesList1(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->cssAppendSource('foo.css', 'printer');
     $assets->cssPushSourcesList('SetBased\\Foo\\Bar');
-    $assets->echoCascadingStyleSheets();
 
-    $this->expectOutputString(implode('', ['<link href="/css/SetBased/Foo/bar1.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/SetBased/Foo/bar2.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/SetBased/Foo/bar3.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/foo1.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/foo2.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/foo4.css" rel="stylesheet" type="text/css"/>',
-                                           '<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>']));
+    $html = Html::htmlNested($assets->structCascadingStyleSheets());
+    self::assertSame(implode('', ['<link href="/css/SetBased/Foo/bar1.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/SetBased/Foo/bar2.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/SetBased/Foo/bar3.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/foo1.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/foo2.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/foo3.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/foo4.css" rel="stylesheet" type="text/css"/>',
+                                  '<link href="/css/foo.css" media="printer" rel="stylesheet" type="text/css"/>']),
+                     $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -381,9 +365,9 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssPushSourcesList2(): void
   {
-    $assets = new CoreWebAssets(self::$kernel);
-
     $this->expectException(\LogicException::class);
+
+    $assets = new CoreWebAssets(self::$kernel);
     $assets->cssPushSourcesList(self::class);
   }
 
@@ -393,10 +377,10 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssPushSourcesList3(): void
   {
-    $assets = new CoreWebAssets(self::$kernel);
-
     $this->expectException(\LogicException::class);
     $this->expectExceptionMessageMatches('/incorrect-list.txt:13/');
+
+    $assets = new CoreWebAssets(self::$kernel);
     $assets->cssPushSourcesList('/css/SetBased/Foo/incorrect-list.txt');
   }
 
@@ -406,11 +390,11 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testCssPushSourcesList4(): void
   {
-    $assets = new CoreWebAssets(self::$kernel);
-
     $this->expectException(\LogicException::class);
     $this->expectExceptionMessageMatches('/css/SetBased/Foo/missing-header.txt/');
     $this->expectExceptionMessageMatches('/# plaisio-css-list/');
+
+    $assets = new CoreWebAssets(self::$kernel);
     $assets->cssPushSourcesList('/css/SetBased/Foo/missing-header.txt');
   }
 
@@ -421,11 +405,10 @@ class CoreWebAssetsTest extends TestCase
   public function testEchoPageTitle01(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle(null);
-    $assets->echoPageTitle();
 
-    $this->expectOutputString('');
+    $html = Html::htmlNested($assets->structPageTitle());
+    self::assertSame('', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -435,11 +418,10 @@ class CoreWebAssetsTest extends TestCase
   public function testEchoPageTitle02(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('');
-    $assets->echoPageTitle();
 
-    self::assertSame('', $this->getActualOutput());
+    $html = Html::htmlNested($assets->structPageTitle());
+    self::assertSame('', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -449,11 +431,10 @@ class CoreWebAssetsTest extends TestCase
   public function testEchoPageTitle03(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('Hello World');
-    $assets->echoPageTitle();
 
-    $this->expectOutputString('<title>Hello World</title>');
+    $html = Html::htmlNested($assets->structPageTitle());
+    self::assertSame('<title>Hello World</title>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -463,11 +444,11 @@ class CoreWebAssetsTest extends TestCase
   public function testJsAdmFunctionCall1(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->jsAdmFunctionCall('SetBased\\Foo\\Bar', 'main');
-    $assets->echoJavaScript();
 
-    $this->expectOutputString('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main();});});"/*]]>*/</script>');
+    $html = Html::htmlNested($assets->structJavaScript());
+    self::assertSame('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main();});});"/*]]>*/</script>',
+                     $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -477,11 +458,11 @@ class CoreWebAssetsTest extends TestCase
   public function testJsAdmFunctionCall2(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->jsAdmFunctionCall('SetBased\\Foo\\Bar', 'main', ['foo', 1]);
-    $assets->echoJavaScript();
 
-    $this->expectOutputString('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main(\\"foo\\",1);});});"/*]]>*/</script>');
+    $html = Html::htmlNested($assets->structJavaScript());
+    self::assertSame('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main(\\"foo\\",1);});});"/*]]>*/</script>',
+                     $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -491,11 +472,10 @@ class CoreWebAssetsTest extends TestCase
   public function testJsAdmFunctionCall3(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->jsAdmFunctionCall('SetBased/Foo', 'main');
-    $assets->echoJavaScript();
 
-    $this->expectOutputString('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\\"],function(page){\'use strict\';page.main();});});"/*]]>*/</script>');
+    $html = Html::htmlNested($assets->structJavaScript());
+    self::assertSame('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\\"],function(page){\'use strict\';page.main();});});"/*]]>*/</script>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -505,11 +485,10 @@ class CoreWebAssetsTest extends TestCase
   public function testJsAdmFunctionCall4(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->jsAdmFunctionCall('SetBased/Foo', 'main', ['foo', false]);
-    $assets->echoJavaScript();
 
-    $this->expectOutputString('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\\"],function(page){\'use strict\';page.main(\\"foo\\",false);});});"/*]]>*/</script>');
+    $html = Html::htmlNested($assets->structJavaScript());
+    self::assertSame('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\\"],function(page){\'use strict\';page.main(\\"foo\\",false);});});"/*]]>*/</script>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -518,9 +497,9 @@ class CoreWebAssetsTest extends TestCase
    */
   public function testJsAdmFunctionCall5(): void
   {
-    $assets = new CoreWebAssets(self::$kernel);
-
     $this->expectException(\LogicException::class);
+
+    $assets = new CoreWebAssets(self::$kernel);
     $assets->jsAdmFunctionCall('SetBased/Foo/Bax', 'main', ['foo', false]);
   }
 
@@ -531,37 +510,35 @@ class CoreWebAssetsTest extends TestCase
   public function testJsAdmOptimizedSetMain(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
+    $assets->jsAdmOptimizedSetMain('/js/SetBased/Foo/Bar.main.js');
+    $html = Html::htmlNested($assets->structJavaScript());
 
-    $assets->jsAdmOptimizedSetMain("/js/SetBased/Foo/Bar.main.js");
-    $assets->echoJavaScript();
-
-    $this->expectOutputString('<script src="/js/SetBased/Foo/Bar.main.js"></script>');
+    self::assertSame('<script src="/js/SetBased/Foo/Bar.main.js"></script>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method jsAdmSetPageSpecificMain.
+   * Test for method jsAdmSetMain.
    */
-  public function testJsAdmSetPageSpecificMain1(): void
+  public function testJsAdmSetMain1(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
+    $assets->jsAdmSetMain('SetBased\\Foo\\Bar');
+    $html = Html::htmlNested($assets->structJavaScript());
 
-    $assets->jsAdmSetPageSpecificMain('SetBased\\Foo\\Bar');
-    $assets->echoJavaScript();
-
-    $this->expectOutputString('<script src="/js/require.js" data-main="/js/SetBased/Foo/Bar.main.js"></script>');
+    self::assertSame('<script src="/js/require.js" data-main="/js/SetBased/Foo/Bar.main.js"></script>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method jsAdmSetPageSpecificMain with missing JS file.
+   * Test for method jsAdmSetMain with missing JS file.
    */
-  public function testJsAdmSetPageSpecificMain2(): void
+  public function testJsAdmSetMain2(): void
   {
-    $assets = new CoreWebAssets(self::$kernel);
-
     $this->expectException(\LogicException::class);
-    $assets->jsAdmSetPageSpecificMain('SetBased\\Foo\\Bax');
+
+    $assets = new CoreWebAssets(self::$kernel);
+    $assets->jsAdmSetMain('SetBased\\Foo\\Bax');
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -571,13 +548,12 @@ class CoreWebAssetsTest extends TestCase
   public function testMetaAddElement(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->metaAddElement(['foo' => 'bar']);
     Html::$encoding = '';
-    $assets->echoMetaTags();
+    $html           = Html::htmlNested($assets->structMetaTags());
     Html::$encoding = 'UTF-8';
 
-    $this->expectOutputString('<meta foo="bar"/><meta/>');
+    self::assertSame('<meta foo="bar"/><meta/>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -587,14 +563,13 @@ class CoreWebAssetsTest extends TestCase
   public function testMetaAddKeyword(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->metaAddKeyword('foo');
     $assets->metaAddKeyword('bar');
     Html::$encoding = '';
-    $assets->echoMetaTags();
+    $html           = Html::htmlNested($assets->structMetaTags());
     Html::$encoding = 'UTF-8';
 
-    $this->expectOutputString('<meta name="keywords" content="foo,bar"/><meta/>');
+    self::assertSame('<meta name="keywords" content="foo,bar"/><meta/>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -604,13 +579,12 @@ class CoreWebAssetsTest extends TestCase
   public function testMetaAddKeywords(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->metaAddKeywords(['foo', 'bar']);
     Html::$encoding = '';
-    $assets->echoMetaTags();
+    $html           = Html::htmlNested($assets->structMetaTags());
     Html::$encoding = 'UTF-8';
 
-    $this->expectOutputString('<meta name="keywords" content="foo,bar"/><meta/>');
+    self::assertSame('<meta name="keywords" content="foo,bar"/><meta/>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -620,7 +594,6 @@ class CoreWebAssetsTest extends TestCase
   public function testPushPageTitle01(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('Hello');
     $assets->pushPageTitle(null);
 
@@ -634,7 +607,6 @@ class CoreWebAssetsTest extends TestCase
   public function testPushPageTitle02(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('Hello');
     $assets->pushPageTitle('');
 
@@ -648,7 +620,6 @@ class CoreWebAssetsTest extends TestCase
   public function testPushPageTitle03(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->pushPageTitle('Hello');
 
     self::assertSame('Hello', $assets->getPageTitle());
@@ -661,7 +632,6 @@ class CoreWebAssetsTest extends TestCase
   public function testPushPageTitle04(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('World');
     $assets->pushPageTitle('Hello');
 
@@ -675,7 +645,6 @@ class CoreWebAssetsTest extends TestCase
   public function testPushPageTitle05(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('Hello, World!');
     $assets->pushPageTitle('-');
 
@@ -689,7 +658,6 @@ class CoreWebAssetsTest extends TestCase
   public function testSetPageTitle01(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle(null);
 
     self::assertSame('', $assets->getPageTitle());
@@ -702,7 +670,6 @@ class CoreWebAssetsTest extends TestCase
   public function testSetPageTitle02(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('');
 
     self::assertSame('', $assets->getPageTitle());
@@ -715,7 +682,6 @@ class CoreWebAssetsTest extends TestCase
   public function testSetPageTitle03(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('Hello World');
 
     self::assertSame('Hello World', $assets->getPageTitle());
@@ -728,7 +694,6 @@ class CoreWebAssetsTest extends TestCase
   public function testSetPageTitle04(): void
   {
     $assets = new CoreWebAssets(self::$kernel);
-
     $assets->setPageTitle('Hello, world');
     $assets->setPageTitle('Bye Bye');
 
