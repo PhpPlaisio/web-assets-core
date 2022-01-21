@@ -1,22 +1,38 @@
 <project name="PhpPlaisio" default="build" basedir=".">
-    <!-- Run composer update and executes various other updates -->
-    <target name="update">
-        <exec command="composer update" checkreturn="true" passthru="true"/>
-        <phing phingfile="build.xml" target="kernel" haltonfailure="true"/>
+    <target name="kernel">
+        <exec executable="bin/plaisio" checkreturn="true" passthru="true">
+            <arg value="--ansi"/>
+            <arg value="plaisio:kernel-properties"/>
+        </exec>
+    </target>
 
-        <!-- Show outdated packages -->
-        <exec executable="composer" checkreturn="true" passthru="true">
+    <!-- Show outdated packages -->
+    <target name="outdated">
+        <exec executable="composer" checkreturn="false" passthru="true">
             <arg value="--ansi"/>
             <arg value="outdated"/>
             <arg value="--direct"/>
         </exec>
     </target>
 
-    <target name="kernel">
-        <exec executable="bin/plaisio" checkreturn="true" passthru="true">
+    <!-- Updates dependencies -->
+    <target name="update">
+        <exec executable="composer" checkreturn="true" passthru="true">
             <arg value="--ansi"/>
-            <arg value="plaisio:kernel-properties"/>
+            <arg value="update"/>
         </exec>
+        <phing phingfile="build.xml" target="kernel" haltonfailure="true"/>
+        <phing phingfile="build.xml" target="outdated" haltonfailure="true"/>
+    </target>
+
+    <!-- Install dependencies -->
+    <target name="install">
+        <exec executable="composer" checkreturn="true" passthru="true">
+            <arg value="--ansi"/>
+            <arg value="install"/>
+        </exec>
+        <phing phingfile="build.xml" target="kernel" haltonfailure="true"/>
+        <phing phingfile="build.xml" target="outdated" haltonfailure="true"/>
     </target>
 
     <!-- Runs all unit tests -->
