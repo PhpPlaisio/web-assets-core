@@ -7,7 +7,7 @@ use Plaisio\Helper\Html;
 use Plaisio\Helper\Url;
 use Plaisio\PlaisioObject;
 use SetBased\Exception\LogicException;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Helper class for setting web assets (things like CSS, JavaScript and image files) and generating HTML code for
@@ -681,7 +681,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
   {
     $uri = $this->cssResolveLocation($location, $media, '.txt');
 
-    $path = Path::join([$this->nub->dirs->assetsDir(), $uri]);
+    $path = Path::join($this->nub->dirs->assetsDir(), $uri);
     if (!file_exists($path))
     {
       throw new LogicException("CSS list file '%s' does not exists", $path);
@@ -712,7 +712,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
   {
     if ($cssPath[0]==='/')
     {
-      $fullPathCssFile = Path::join([$this->nub->dirs->assetsDir(), $cssPath]);
+      $fullPathCssFile = Path::join($this->nub->dirs->assetsDir(), $cssPath);
     }
     else
     {
