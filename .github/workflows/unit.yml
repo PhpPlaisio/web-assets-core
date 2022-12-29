@@ -28,8 +28,8 @@ jobs:
       - name: "Install PHP with extensions"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version:    "${{ matrix.php-version }}"
-          php_extensions: "xdebug"
+          php-version: "${{ matrix.php-version }}"
+          extensions:  "inotify, xdebug"
 
       - name: "Cache dependencies installed with Composer"
         uses: "actions/cache@v2"
