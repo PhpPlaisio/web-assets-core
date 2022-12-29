@@ -57,7 +57,7 @@ class CoreWebAssetsTest extends TestCase
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Test for method appendPageTitle with non empty string.
+   * Test for method appendPageTitle with non-empty string.
    */
   public function testAppendPageTitle03(): void
   {
@@ -447,8 +447,7 @@ class CoreWebAssetsTest extends TestCase
     $assets->jsAdmFunctionCall('SetBased\\Foo\\Bar', 'main');
 
     $html = Html::htmlNested($assets->structJavaScript());
-    self::assertSame('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main();});});"/*]]>*/</script>',
-                     $html);
+    self::assertSame('<script data-php-inline-js="require([],function(){require([&quot;SetBased/Foo/Bar&quot;],function(page){&#039;use strict&#039;;page.main();});});"></script>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -461,8 +460,7 @@ class CoreWebAssetsTest extends TestCase
     $assets->jsAdmFunctionCall('SetBased\\Foo\\Bar', 'main', ['foo', 1]);
 
     $html = Html::htmlNested($assets->structJavaScript());
-    self::assertSame('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\/Bar\\"],function(page){\'use strict\';page.main(\\"foo\\",1);});});"/*]]>*/</script>',
-                     $html);
+    self::assertSame('<script data-php-inline-js="require([],function(){require([&quot;SetBased/Foo/Bar&quot;],function(page){&#039;use strict&#039;;page.main(&quot;foo&quot;,1);});});"></script>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -475,7 +473,7 @@ class CoreWebAssetsTest extends TestCase
     $assets->jsAdmFunctionCall('SetBased/Foo', 'main');
 
     $html = Html::htmlNested($assets->structJavaScript());
-    self::assertSame('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\\"],function(page){\'use strict\';page.main();});});"/*]]>*/</script>', $html);
+    self::assertSame('<script data-php-inline-js="require([],function(){require([&quot;SetBased/Foo&quot;],function(page){&#039;use strict&#039;;page.main();});});"></script>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -488,7 +486,7 @@ class CoreWebAssetsTest extends TestCase
     $assets->jsAdmFunctionCall('SetBased/Foo', 'main', ['foo', false]);
 
     $html = Html::htmlNested($assets->structJavaScript());
-    self::assertSame('<script>/*<![CDATA[*/php_plaisio_inline_js="require([],function(){require([\\"SetBased\/Foo\\"],function(page){\'use strict\';page.main(\\"foo\\",false);});});"/*]]>*/</script>', $html);
+    self::assertSame('<script data-php-inline-js="require([],function(){require([&quot;SetBased/Foo&quot;],function(page){&#039;use strict&#039;;page.main(&quot;foo&quot;,false);});});"></script>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------

@@ -547,16 +547,20 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    */
   public function structJavaScript(): ?array
   {
-    $struct = [];
-
-    if ($this->javaScript!==null)
+    if ($this->javaScript===null)
     {
-      $js       = 'require([],function(){'.$this->javaScript.'});';
-      $struct[] = ['tag'  => 'script',
-                   'html' => '/*<![CDATA[*/php_plaisio_inline_js='.json_encode($js).'/*]]>*/'];
+      unset($this->jsTrailerAttributes['data-php-inline-js']);
+    }
+    else
+    {
+      $this->jsTrailerAttributes['data-php-inline-js'] = 'require([],function(){'.$this->javaScript.'});';
     }
 
-    if (!empty($this->jsTrailerAttributes))
+    if (empty($this->jsTrailerAttributes))
+    {
+      $struct = [];
+    }
+    else
     {
       $struct[] = ['tag'  => 'script',
                    'attr' => $this->jsTrailerAttributes,
