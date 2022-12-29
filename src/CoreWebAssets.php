@@ -558,13 +558,13 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
 
     if (empty($this->jsTrailerAttributes))
     {
-      $struct = [];
+      $struct = null;
     }
     else
     {
-      $struct[] = ['tag'  => 'script',
-                   'attr' => $this->jsTrailerAttributes,
-                   'html' => null];
+      $struct = ['tag'  => 'script',
+                 'attr' => $this->jsTrailerAttributes,
+                 'html' => null];
     }
 
     return $struct;
