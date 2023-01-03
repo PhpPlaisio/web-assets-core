@@ -17,7 +17,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
 {
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * A unique constant for identifying the main script tag. Must align with the ID in package plaisio-ts/kernel.
+   * A unique constant for identifying the main script element. Must align with the ID in package plaisio-ts/kernel.
    */
   const C_MAIN_ID = '32313ac1-c9eb-4464-a1fc-033544830ffa';
 
