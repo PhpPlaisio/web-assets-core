@@ -511,7 +511,7 @@ class CoreWebAssetsTest extends TestCase
     $assets->jsAdmOptimizedSetMain('/js/SetBased/Foo/Bar.main.js');
     $html = Html::htmlNested($assets->structJavaScript());
 
-    self::assertSame('<script src="/js/SetBased/Foo/Bar.main.js"></script>', $html);
+    self::assertSame('<script id="32313ac1-c9eb-4464-a1fc-033544830ffa" src="/js/SetBased/Foo/Bar.main.js"></script>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -524,7 +524,7 @@ class CoreWebAssetsTest extends TestCase
     $assets->jsAdmSetMain('SetBased\\Foo\\Bar');
     $html = Html::htmlNested($assets->structJavaScript());
 
-    self::assertSame('<script src="/js/require.js" data-main="/js/SetBased/Foo/Bar.main.js"></script>', $html);
+    self::assertSame('<script id="32313ac1-c9eb-4464-a1fc-033544830ffa" src="/js/require.js" data-main="/js/SetBased/Foo/Bar.main.js"></script>', $html);
   }
 
   //--------------------------------------------------------------------------------------------------------------------

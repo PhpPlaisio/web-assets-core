@@ -17,6 +17,12 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
 {
   //--------------------------------------------------------------------------------------------------------------------
   /**
+   * A unique constant for identifying the main script tag. Must align with the ID in package plaisio-ts/kernel.
+   */
+  const C_MAIN_ID = '32313ac1-c9eb-4464-a1fc-033544830ffa';
+
+  //--------------------------------------------------------------------------------------------------------------------
+  /**
    * The root-relative URL for storing CSS files. Note: Must have a leading and a trailing slash.
    *
    * @var string
@@ -376,16 +382,16 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
 
   //--------------------------------------------------------------------------------------------------------------------
   /**
-   * Do not use this function, use {@link jsAdmSetPageSpecificMain} instead.
+   * Do not use this function, use {@link jsAdmSetMain} instead.
    * ```
-   * $this->jsAdmSetPageSpecificMain(__CLASS__);
+   * $this->jsAdmSetMain(__CLASS__);
    * ```
    *
    * @param string $mainJsScript The main script for RequireJS.
    */
   public function jsAdmOptimizedSetMain(string $mainJsScript): void
   {
-    $this->jsTrailerAttributes = ['src' => $mainJsScript];
+    $this->jsTrailerAttributes = ['id' => self::C_MAIN_ID, 'src' => $mainJsScript];
   }
 
   //--------------------------------------------------------------------------------------------------------------------
@@ -419,7 +425,9 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
       throw new LogicException("JavaScript file '%s' does not exists", $fullPath);
     }
 
-    $this->jsTrailerAttributes = ['src' => $this->jsNamespaceToRootRelativeUrl('require'), 'data-main' => $url];
+    $this->jsTrailerAttributes = ['id'        => self::C_MAIN_ID,
+                                  'src'       => $this->jsNamespaceToRootRelativeUrl('require'),
+                                  'data-main' => $url];
   }
 
   //--------------------------------------------------------------------------------------------------------------------
