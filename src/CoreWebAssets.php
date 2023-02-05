@@ -343,7 +343,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    */
   public function jsAdmFunctionCall(string $name, string $jsFunctionName, array $args = []): void
   {
-    if (strpos($name, '\\')!==false)
+    if (str_contains($name, '\\'))
     {
       $namespace = $this->jsClassNameToNamespace($name);
     }
@@ -767,7 +767,7 @@ class CoreWebAssets extends PlaisioObject implements WebAssets
    */
   private function cssResolveLocation(string $location, ?string $media, string $extension): string
   {
-    if (strpos($location, '\\')!==false)
+    if (str_contains($location, '\\'))
     {
       $uri = $this->cssClassNameToRootRelativeUrl($location, $media, $extension);
     }

@@ -2,7 +2,9 @@
 /.phpunit.result.cache
 /bin/
 /composer.lock
+/custom.task.properties
+/custom.type.properties
 /doc/
-/vendor/
 /test/coverage.xml
 /test/report/
+/vendor/
