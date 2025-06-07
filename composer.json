@@ -15,7 +15,7 @@
     "plaisio/kernel": "^3.2.1",
     "plaisio/web-assets": "^3.1.0",
     "setbased/exception": "^2.3.0",
-    "symfony/filesystem": "^6.2.5"
+    "symfony/filesystem": "^6.0|^7.0"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
